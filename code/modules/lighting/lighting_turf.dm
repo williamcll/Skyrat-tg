@@ -63,6 +63,8 @@
 
 	totallums = (totallums - minlum) / (maxlum - minlum)
 
+	totallums += dynamic_lumcount
+
 	return CLAMP01(totallums)
 
 // Returns a boolean whether the turf is on soft lighting.
@@ -73,7 +75,7 @@
 	if (!lighting_object)
 		return FALSE
 
-	return !lighting_object.luminosity
+	return !(lighting_object.luminosity || dynamic_lumcount)
 
 
 ///Proc to add movable sources of opacity on the turf and let it handle lighting code.

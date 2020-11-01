@@ -36,6 +36,7 @@ GLOBAL_LIST_INIT(bibleitemstates, list("bible", "koran", "scrapbook", "burning",
 	icon = 'icons/obj/storage.dmi'
 	icon_state = "bible"
 	inhand_icon_state = "bible"
+	worn_icon_state = "bible"
 	lefthand_file = 'icons/mob/inhands/misc/books_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/misc/books_righthand.dmi'
 	var/mob/affecting = null
@@ -158,7 +159,7 @@ GLOBAL_LIST_INIT(bibleitemstates, list("bible", "koran", "scrapbook", "burning",
 	if (!heal_mode)
 		return ..()
 
-	var/smack = 1
+	var/smack = TRUE
 
 	if (M.stat != DEAD)
 		if(chaplain && user == M)
@@ -166,7 +167,7 @@ GLOBAL_LIST_INIT(bibleitemstates, list("bible", "koran", "scrapbook", "burning",
 			return
 
 		if(prob(60) && bless(M, user))
-			smack = 0
+			smack = FALSE
 		else if(iscarbon(M))
 			var/mob/living/carbon/C = M
 			if(!istype(C.head, /obj/item/clothing/head/helmet))

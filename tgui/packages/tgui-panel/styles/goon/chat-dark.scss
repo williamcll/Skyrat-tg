@@ -449,11 +449,21 @@ em {
 
 .tinynotice {
   color: #6685f5;
+  font-size: 85%;
+}
+
+.tinynoticeital {
+  color: #6685f5;
   font-style: italic;
   font-size: 85%;
 }
 
 .smallnotice {
+  color: #6685f5;
+  font-size: 90%;
+}
+
+.smallnoticeital {
   color: #6685f5;
   font-style: italic;
   font-size: 90%;
@@ -850,3 +860,8 @@ em {
 .ml-3 {
   margin-left: 3em;
 }
+
+/* SKYRAT DARK MODE CLASSES */
+.mentor         {color: #8a2be2;}
+.looc         {color: #d8b555;}
+.rlooc          {color: #b09448;}

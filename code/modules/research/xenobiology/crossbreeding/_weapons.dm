@@ -33,24 +33,24 @@ Slimecrossing Weapons
 	switch(damtype)
 		if(BRUTE)
 			hitsound = 'sound/weapons/bladeslice.ogg'
-			attack_verb_continuous = list("slashes", "slices", "cuts")
-			attack_verb_simple = list("slash", "slice", "cut")
+			attack_verb_continuous = string_list(list("slashes", "slices", "cuts"))
+			attack_verb_simple = string_list(list("slash", "slice", "cut"))
 		if(BURN)
 			hitsound = 'sound/weapons/sear.ogg'
-			attack_verb_continuous = list("burns", "sings", "heats")
-			attack_verb_simple = list("burn", "sing", "heat")
+			attack_verb_continuous = string_list(list("burns", "sings", "heats"))
+			attack_verb_simple = string_list(list("burn", "sing", "heat"))
 		if(TOX)
 			hitsound = 'sound/weapons/pierce.ogg'
-			attack_verb_continuous = list("poisons", "doses", "toxifies")
-			attack_verb_simple = list("poison", "dose", "toxify")
+			attack_verb_continuous = string_list(list("poisons", "doses", "toxifies"))
+			attack_verb_simple = string_list(list("poison", "dose", "toxify"))
 		if(OXY)
 			hitsound = 'sound/effects/space_wind.ogg'
-			attack_verb_continuous = list("suffocates", "winds", "vacuums")
-			attack_verb_simple = list("suffocate", "wind", "vacuum")
+			attack_verb_continuous = string_list(list("suffocates", "winds", "vacuums"))
+			attack_verb_simple = string_list(list("suffocate", "wind", "vacuum"))
 		if(CLONE)
 			hitsound = 'sound/items/geiger/ext1.ogg'
-			attack_verb_continuous = list("irradiates", "mutates", "maligns")
-			attack_verb_simple = list("irradiate", "mutate", "malign")
+			attack_verb_continuous = string_list(list("irradiates", "mutates", "maligns"))
+			attack_verb_simple = string_list(list("irradiate", "mutate", "malign"))
 	return ..()
 
 //Adamantine shield - Chilling Adamantine
@@ -61,7 +61,7 @@ Slimecrossing Weapons
 	icon_state = "adamshield"
 	inhand_icon_state = "adamshield"
 	w_class = WEIGHT_CLASS_HUGE
-	armor = list("melee" = 50, "bullet" = 50, "laser" = 50, "energy" = 0, "bomb" = 30, "bio" = 0, "rad" = 0, "fire" = 80, "acid" = 70)
+	armor = list(MELEE = 50, BULLET = 50, LASER = 50, ENERGY = 0, BOMB = 30, BIO = 0, RAD = 0, FIRE = 80, ACID = 70)
 	slot_flags = ITEM_SLOT_BACK
 	block_chance = 75
 	force = 0
@@ -97,18 +97,18 @@ Slimecrossing Weapons
 	. = ..()
 	ADD_TRAIT(src, TRAIT_NODROP, HAND_REPLACEMENT_TRAIT)
 
-/obj/item/gun/magic/bloodchill/process()
-	charge_tick++
-	if(charge_tick < recharge_rate || charges >= max_charges)
-		return 0
-	charge_tick = 0
+/obj/item/gun/magic/bloodchill/process(delta_time)
+	charge_timer += delta_time
+	if(charge_timer < recharge_rate || charges >= max_charges)
+		return FALSE
+	charge_timer = 0
 	var/mob/living/M = loc
 	if(istype(M) && M.blood_volume >= 20)
 		charges++
 		M.blood_volume -= 20
 	if(charges == 1)
 		recharge_newshot()
-	return 1
+	return TRUE
 
 /obj/item/ammo_casing/magic/bloodchill
 	projectile_type = /obj/projectile/magic/bloodchill

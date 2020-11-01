@@ -54,11 +54,15 @@
 #define ABOVE_BODY_FRONT_LAYER		(BODY_FRONT_LAYER-1)
 
 
+//SKYRAT EDIT REMOVAL BEGIN - ALERTS (moved to modular defines)
+/*
 //Security levels
 #define SEC_LEVEL_GREEN	0
 #define SEC_LEVEL_BLUE	1
 #define SEC_LEVEL_RED	2
 #define SEC_LEVEL_DELTA	3
+*/
+//SKYRAT EDIT END
 
 //some arbitrary defines to be used by self-pruning global lists. (see master_controller)
 #define PROCESS_KILL 26	//Used to trigger removal from a processing list
@@ -134,12 +138,11 @@
 GLOBAL_LIST_EMPTY(bloody_footprints_cache)
 
 //Bloody shoes/footprints
-#define MAX_SHOE_BLOODINESS			100
-#define BLOODY_FOOTPRINT_BASE_ALPHA	150
-#define BLOOD_GAIN_PER_STEP			100
-#define BLOOD_LOSS_PER_STEP			5
-#define BLOOD_LOSS_IN_SPREAD		20
-#define BLOOD_AMOUNT_PER_DECAL		20
+#define BLOODY_FOOTPRINT_BASE_ALPHA 20 /// Minimum alpha of footprints
+#define BLOOD_AMOUNT_PER_DECAL      50 /// How much blood a regular blood splatter contains
+#define BLOOD_ITEM_MAX              200 /// How much blood an item can have stuck on it
+#define BLOOD_POOL_MAX              300 /// How much blood a blood decal can contain
+#define BLOOD_FOOTPRINTS_MIN        5 /// How much blood a footprint need to at least contain
 
 //Bloody shoe blood states
 #define BLOOD_STATE_HUMAN			"blood"
@@ -516,3 +519,14 @@ GLOBAL_LIST_INIT(pda_styles, sortList(list(MONO, VT, ORBITRON, SHARE)))
 #define ANON_DISABLED "" //so it's falsey
 #define ANON_RANDOMNAMES "Random Default"
 #define ANON_EMPLOYEENAMES "Employees"
+
+/// Possible value of [/atom/movable/buckle_lying]. If set to a different (positive-or-zero) value than this, the buckling thing will force a lying angle on the buckled.
+#define NO_BUCKLE_LYING -1
+
+
+// timed_action_flags parameter for `/proc/do_atom`, `/proc/do_after_mob`, `/proc/do_mob` and `/proc/do_after`
+#define IGNORE_TARGET_IN_DOAFTERS (1<<0)
+#define IGNORE_USER_LOC_CHANGE (1<<1)
+#define IGNORE_TARGET_LOC_CHANGE (1<<2)
+#define IGNORE_HELD_ITEM (1<<3)
+#define IGNORE_INCAPACITATED (1<<4)

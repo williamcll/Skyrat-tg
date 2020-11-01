@@ -28,19 +28,7 @@
 
 /datum/chemical_reaction/salglu_solution
 	results = list(/datum/reagent/medicine/salglu_solution = 3)
-	required_reagents = list(/datum/reagent/consumable/sodiumchloride = 1, /datum/reagent/water = 1, /datum/reagent/consumable/sugar = 1)
-
-/datum/chemical_reaction/baked_banana_peel
-	results = list(/datum/reagent/consumable/baked_banana_peel = 1)
-	required_temp = 413.15 // if it's good enough for caramel it's good enough for this
-	required_reagents = list(/datum/reagent/consumable/banana_peel = 1)
-	mix_message = "The pulp dries up and takes on a powdery state!"
-	mob_react = FALSE
-
-/datum/chemical_reaction/coagulant_weak
-	results = list(/datum/reagent/medicine/coagulant/weak = 3)
-	required_reagents = list(/datum/reagent/medicine/salglu_solution = 2, /datum/reagent/consumable/baked_banana_peel = 1)
-	mob_react = FALSE
+	required_reagents = list(/datum/reagent/consumable/salt = 1, /datum/reagent/water = 1, /datum/reagent/consumable/sugar = 1)
 
 /datum/chemical_reaction/mine_salve
 	results = list(/datum/reagent/medicine/mine_salve = 3)
@@ -163,7 +151,7 @@
 
 /datum/chemical_reaction/granibitaluri
 	results = list(/datum/reagent/medicine/granibitaluri = 3)
-	required_reagents = list(/datum/reagent/consumable/sodiumchloride = 1, /datum/reagent/carbon = 1, /datum/reagent/toxin/acid = 1)
+	required_reagents = list(/datum/reagent/consumable/salt = 1, /datum/reagent/carbon = 1, /datum/reagent/toxin/acid = 1)
 	required_catalysts = list(/datum/reagent/iron = 5)
 
 ///medical stacks

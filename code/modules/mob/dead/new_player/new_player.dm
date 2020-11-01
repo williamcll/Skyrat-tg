@@ -44,6 +44,9 @@
   * This proc generates the panel that opens to all newly joining players, allowing them to join, observe, view polls, view the current crew manifest, and open the character customization menu.
   */
 /mob/dead/new_player/proc/new_player_panel()
+	if (client?.interviewee)
+		return
+
 	var/datum/asset/asset_datum = get_asset_datum(/datum/asset/simple/lobby)
 	asset_datum.send(client)
 	var/list/output = list("<center><p><a href='byond://?src=[REF(src)];show_preferences=1'>Setup Character</a></p>")
@@ -108,10 +111,13 @@
 
 /mob/dead/new_player/Topic(href, href_list[])
 	if(src != usr)
-		return 0
+		return
 
 	if(!client)
-		return 0
+		return
+
+	if(client.interviewee)
+		return FALSE
 
 	//Determines Relevent Population Cap
 	var/relevant_cap
@@ -123,8 +129,9 @@
 		relevant_cap = max(hpc, epc)
 
 	if(href_list["show_preferences"])
+		client.prefs.needs_update = TRUE //SKYRAT EDIT ADDITION - CUSTOMIZATION
 		client.prefs.ShowChoices(src)
-		return 1
+		return TRUE
 
 	if(href_list["ready"])
 		var/tready = text2num(href_list["ready"])
@@ -233,6 +240,7 @@
 	if(observer.client && observer.client.prefs)
 		observer.real_name = observer.client.prefs.real_name
 		observer.name = observer.real_name
+		observer.client.init_verbs()
 	observer.update_icon()
 	observer.stop_sound_channel(CHANNEL_LOBBYMUSIC)
 	QDEL_NULL(mind)
@@ -253,6 +261,10 @@
 			return "Your account is not old enough for [jobtitle]."
 		if(JOB_UNAVAILABLE_SLOTFULL)
 			return "[jobtitle] is already filled to capacity."
+		//SKYRAT EDIT ADDITION BEGIN - CUSTOMIZATION
+		if(JOB_UNAVAILABLE_QUIRK)
+			return "[jobtitle] is restricted from your quirks."
+		//SKYRAT EDIT END
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
@@ -276,6 +288,10 @@
 		return JOB_UNAVAILABLE_ACCOUNTAGE
 	if(job.required_playtime_remaining(client))
 		return JOB_UNAVAILABLE_PLAYTIME
+	//SKYRAT EDIT ADDITION BEGIN - CUSTOMIZATION
+	if(job.has_banned_quirk(client.prefs))
+		return JOB_UNAVAILABLE_QUIRK
+	//SKYRAT EDIT END
 	if(latejoin && !job.special_check_latejoin(client))
 		return JOB_UNAVAILABLE_GENERIC
 	return JOB_AVAILABLE
@@ -324,7 +340,7 @@
 		character.update_parallax_teleport()
 
 	SSticker.minds += character.mind
-
+	character.client.init_verbs() // init verbs for the late join
 	var/mob/living/carbon/human/humanc
 	if(ishuman(character))
 		humanc = character	//Let's retypecast the var to be human,
@@ -376,6 +392,9 @@
 
 /mob/dead/new_player/proc/LateChoices()
 	var/list/dat = list("<div class='notice'>Round Duration: [DisplayTimeText(world.time - SSticker.round_start_time)]</div>")
+	//SKYRAT EDIT ADDITION BEGIN - ALERTS
+	dat += "<div class='notice'>Alert Level: [capitalize(num2seclevel(GLOB.security_level))]</div>"
+	//SKYRAT EDIT END
 	if(SSshuttle.emergency)
 		switch(SSshuttle.emergency.mode)
 			if(SHUTTLE_ESCAPE)
@@ -450,12 +469,13 @@
 	if(mind)
 		if(transfer_after)
 			mind.late_joiner = TRUE
-		mind.active = 0					//we wish to transfer the key manually
+		mind.active = FALSE					//we wish to transfer the key manually
+		mind.original_character_slot_index = client.prefs.default_slot
 		mind.transfer_to(H)					//won't transfer key since the mind is not active
 		mind.original_character = H
 
 	H.name = real_name
-
+	client.init_verbs()
 	. = H
 	new_character = .
 	if(transfer_after)
@@ -519,3 +539,30 @@
 
 		return FALSE //This is the only case someone should actually be completely blocked from antag rolling as well
 	return TRUE
+
+/**
+  * Prepares a client for the interview system, and provides them with a new interview
+  *
+  * This proc will both prepare the user by removing all verbs from them, as well as
+  * giving them the interview form and forcing it to appear.
+  */
+/mob/dead/new_player/proc/register_for_interview()
+	// First we detain them by removing all the verbs they have on client
+	for (var/v in client.verbs)
+		var/procpath/verb_path = v
+		if (!(verb_path in GLOB.stat_panel_verbs))
+			remove_verb(client, verb_path)
+
+	// Then remove those on their mob as well
+	for (var/v in verbs)
+		var/procpath/verb_path = v
+		if (!(verb_path in GLOB.stat_panel_verbs))
+			remove_verb(src, verb_path)
+
+	// Then we create the interview form and show it to the client
+	var/datum/interview/I = GLOB.interviews.interview_for_client(client)
+	if (I)
+		I.ui_interact(src)
+
+	// Add verb for re-opening the interview panel, and re-init the verbs for the stat panel
+	add_verb(src, /mob/dead/new_player/proc/open_interview)

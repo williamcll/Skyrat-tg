@@ -332,13 +332,12 @@ GLOBAL_LIST_INIT(wire_node_generating_types, typecacheof(list(/obj/structure/gri
 		var/datum/powernet/newPN = new()// creates a new powernet...
 		propagate_network(O, newPN)//... and propagates it to the other side of the cable
 
-//Makes a new network for the cable and propgates it.
-//If it finds another network in the process, aborts and uses that one and propagates off of it instead
+//Makes a new network for the cable and propgates it. If we already have one, just die
 /obj/structure/cable/proc/propagate_if_no_network()
 	if(powernet)
 		return
 	var/datum/powernet/newPN = new()
-	propagate_network(src, newPN, TRUE)
+	propagate_network(src, newPN)
 
 // cut the cable's powernet at this cable and updates the powergrid
 /obj/structure/cable/proc/cut_cable_from_powernet(remove = TRUE)
@@ -415,8 +414,8 @@ GLOBAL_LIST_INIT(wire_node_generating_types, typecacheof(list(/obj/structure/gri
 
 /obj/item/stack/cable_coil/Initialize(mapload, new_amount = null)
 	. = ..()
-	pixel_x = rand(-2,2)
-	pixel_y = rand(-2,2)
+	pixel_x = base_pixel_x + rand(-2, 2)
+	pixel_y = base_pixel_y + rand(-2, 2)
 	update_icon()
 
 /obj/item/stack/cable_coil/examine(mob/user)
@@ -456,9 +455,9 @@ GLOBAL_LIST_INIT(wire_node_generating_types, typecacheof(list(/obj/structure/gri
 	restraints_icon.maptext = "<span class='maptext' [amount >= CABLE_RESTRAINTS_COST ? "" : "style='color: red'"]>[CABLE_RESTRAINTS_COST]</span>"
 
 	var/list/radial_menu = list(
-	"Layer 1" = image(icon = 'icons/mob/radial.dmi', icon_state = "coil-red"),
-	"Layer 2" = image(icon = 'icons/mob/radial.dmi', icon_state = "coil-yellow"),
-	"Layer 3" = image(icon = 'icons/mob/radial.dmi', icon_state = "coil-blue"),
+	"Layer 1" = image(icon = 'icons/hud/radial.dmi', icon_state = "coil-red"),
+	"Layer 2" = image(icon = 'icons/hud/radial.dmi', icon_state = "coil-yellow"),
+	"Layer 3" = image(icon = 'icons/hud/radial.dmi', icon_state = "coil-blue"),
 	"Multilayer cable hub" = image(icon = 'icons/obj/power.dmi', icon_state = "cable_bridge"),
 	"Multi Z layer cable hub" = image(icon = 'icons/obj/power.dmi', icon_state = "cablerelay-broken-cable"),
 	"Cable restraints" = restraints_icon
@@ -588,13 +587,14 @@ GLOBAL_LIST_INIT(wire_node_generating_types, typecacheof(list(/obj/structure/gri
 /obj/item/stack/cable_coil/cut
 	amount = null
 	icon_state = "coil2"
+	worn_icon_state = "coil"
 
 /obj/item/stack/cable_coil/cut/Initialize(mapload)
 	. = ..()
 	if(!amount)
 		amount = rand(1,2)
-	pixel_x = rand(-2,2)
-	pixel_y = rand(-2,2)
+	pixel_x = base_pixel_x + rand(-2, 2)
+	pixel_y = base_pixel_y + rand(-2, 2)
 	update_icon()
 
 /obj/item/stack/cable_coil/cyborg
@@ -701,9 +701,9 @@ GLOBAL_LIST(hub_radial_layer_list)
 		return
 	if(!GLOB.hub_radial_layer_list)
 		GLOB.hub_radial_layer_list = list(
-			"Layer 1" = image(icon = 'icons/mob/radial.dmi', icon_state = "coil-red"),
-			"Layer 2" = image(icon = 'icons/mob/radial.dmi', icon_state = "coil-yellow"),
-			"Layer 3" = image(icon = 'icons/mob/radial.dmi', icon_state = "coil-blue"),
+			"Layer 1" = image(icon = 'icons/hud/radial.dmi', icon_state = "coil-red"),
+			"Layer 2" = image(icon = 'icons/hud/radial.dmi', icon_state = "coil-yellow"),
+			"Layer 3" = image(icon = 'icons/hud/radial.dmi', icon_state = "coil-blue"),
 			"Machinery" = image(icon = 'icons/obj/power.dmi', icon_state = "smes")
 			)
 
