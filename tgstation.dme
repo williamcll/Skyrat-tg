@@ -3484,6 +3484,7 @@
 #include "modular_skyrat\modules\mentor\code\mentorpm.dm"
 #include "modular_skyrat\modules\mentor\code\mentorsay.dm"
 #include "modular_skyrat\modules\mentor\code\mentorwho.dm"
+#include "modular_skyrat\modules\miningdrill\code\modules\vehicles\miningdrill.dm"
 #include "modular_skyrat\modules\modular_weapons\code\datums\components\crafting\recipes.dm"
 #include "modular_skyrat\modules\modular_weapons\code\modules\projectiles\guns\ballistic\automatic.dm"
 #include "modular_skyrat\modules\modular_weapons\code\modules\projectiles\guns\ballistic\pistol.dm"

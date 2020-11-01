@@ -107,28 +107,6 @@
 /obj/vehicle/sealed/miningdrill/attack_hand(mob/living/user)
 	. = ..()
 
-/obj/vehicle/sealed/miningdrill/key_down()
-	switch(key)
-		if("W")
-			engine_load = TRUE
-		if("A")
-			engine_load = TRUE
-		if("S")
-			engine_load = TRUE
-		if("D")
-			engine_load = TRUE
-
-/obj/vehicle/sealed/miningdrill/key_up()
-	switch(key)
-		if("W")
-			engine_load = FALSE
-		if("A")
-			engine_load = FALSE
-		if("S")
-			engine_load = FALSE
-		if("D")
-			engine_load = FALSE
-
 /obj/vehicle/sealed/miningdrill/after_move()
 	engine_load = FALSE
 	..()
@@ -146,7 +124,7 @@
 
 	last_enginesound_time_load = world.time
 
-	playsound(src, engine_running_sound_load[engine_rpm], 70, 0, 20, 0, null, CHANNEL_MININGDRILL_ENGINE)
+	playsound(src, engine_running_sound_load[engine_rpm], 70, FALSE, 20, SOUND_FALLOFF_EXPONENT, CHANNEL_MININGDRILL_ENGINE)
 
 	return TRUE
 
@@ -166,7 +144,7 @@
 
 	last_enginesound_time = world.time
 
-	playsound(src, engine_running_sound[engine_rpm], 70, 0, 10, 0, null, CHANNEL_MININGDRILL_ENGINE)
+	playsound(src, engine_running_sound[engine_rpm], 70, 0, 10, SOUND_FALLOFF_EXPONENT, CHANNEL_MININGDRILL_ENGINE)
 
 	return TRUE
 
@@ -249,7 +227,8 @@
 /obj/vehicle/sealed/miningdrill/proc/start_engine()
 	visible_message("The engine roars to life as the guages read nominal.")
 	power_usage += (100 * engine_rpm)
-	playsound(src, engine_start_sound, rand(50,60), 0, 10, 0, null, CHANNEL_MININGDRILL_ENGINE)
+	playsound()
+	playsound(src, engine_start_sound, rand(50,60), 0, 10, SOUND_FALLOFF_EXPONENT, CHANNEL_MININGDRILL_ENGINE)
 	var/direction = prob(50) ? -1 : 1
 	animate(src, pixel_x = pixel_x + 2 * direction, time = 1, easing = QUAD_EASING | EASE_OUT)
 	animate(pixel_x = pixel_x - (2 * 2 * direction), time = 1)
@@ -260,7 +239,7 @@
 	visible_message("The engine starts to spin down, the guages reading offline.")
 	power_usage -= (100 * engine_rpm)
 	engine_status = 0
-	playsound(src, engine_stop_sound, rand(50,60), 0, 10, 0, null, CHANNEL_MININGDRILL_ENGINE)
+	playsound(src, engine_stop_sound, rand(50,60), 0, 10, SOUND_FALLOFF_EXPONENT, CHANNEL_MININGDRILL_ENGINE)
 	update_icons()
 
 /obj/vehicle/sealed/miningdrill/proc/engine_on()
