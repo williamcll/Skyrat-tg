@@ -43,3 +43,14 @@
 /client/proc/is_mentor() // admins are mentors too.
 	if(mentor_datum || check_rights_for(src, R_ADMIN,0))
 		return TRUE
+
+/client/proc/add_whitelist()
+	message_admins("[key_name_admin(src)] was whitelisted!")
+	whitelisted = TRUE
+
+/client/proc/late_kick()
+	if(whitelisted)
+		return
+	player_age = -1
+	message_admins("[key_name_admin(src)] was kicked for not being on the whitelist!")
+	qdel(src)

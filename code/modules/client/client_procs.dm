@@ -88,6 +88,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		nuke_chat()
 	if(href_list["reload_statbrowser"])
 		src << browse(file('html/statbrowser.html'), "window=statbrowser")
+	if(href_list["add_whitelist"])
+		add_whitelist(src)
+	if(href_list["whitelist_kick"])
+		message_admins("[key_name_admin(src)] was kicked for not being on the whitelist!")
+		qdel(src)
+
 	// Log all hrefs
 	log_href("[src] (usr:[usr]\[[COORD(usr)]\]) : [hsrc ? "[hsrc] " : ""][href]")
 
@@ -383,6 +389,11 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	add_verbs_from_config()
 	var/cached_player_age = set_client_age_from_db(tdata) //we have to cache this because other shit may change it and we need it's current value now down below.
+	if (isnum(cached_player_age) && cached_player_age == -1)
+		to_chat(src,"Error, you do not appear to be whitelisted or on the discord server. Please submit an application on the discord https//discord.gg/hGpZ4Z3")
+		message_admins("New user: [key_name_admin(src)] is attempting to connect, however is not whitelisted. They will be automatically kicked in 30 seconds. <a href='?src=[REF(src)];add_whitelist=1'>WHITELIST</a> | <a href='?src=[REF(src)];whitelist_kick=1'>KICK</a>")
+		addtimer(CALLBACK(.proc/late_kick, src), 30 SECONDS)
+		return
 	if (isnum(cached_player_age) && cached_player_age == -1) //first connection
 		player_age = 0
 	var/nnpa = CONFIG_GET(number/notify_new_player_age)
