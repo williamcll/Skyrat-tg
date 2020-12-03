@@ -8,13 +8,13 @@
 	///List of possible fossils, and their weight
 	var/list/fossil_weight
 	///Type of the planet generator we're using for the planet
-	var/datum/datum/map_generator/planet_gen
+	var/datum/map_generator/planet_gen
 	///Whether our planet uses a day/night system.
 	var/day_night_system = FALSE
 	///List of possible ores, and their weight. Planetary ore node spawners care about this (Also, here's an idea: make it based off of biomes, somehow, later)
 	var/list/ore_weight
-	var/ore_density = 10
-	var/ore_variety = 10
+	var/ore_density = 1
+	var/ore_variety = 1
 	var/possible_ore_nodes = 8
 	var/spawned_ore_nodes = 0 //Counter for already spawned ore nodes, dont change this
 
