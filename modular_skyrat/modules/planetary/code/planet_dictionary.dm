@@ -13,7 +13,9 @@
 	var/day_night_system = FALSE
 	///List of possible ores, and their weight. Planetary ore node spawners care about this (Also, here's an idea: make it based off of biomes, somehow, later)
 	var/list/ore_weight
+	///Multiplier of ores
 	var/ore_density = 1
+	///How many ore types are gonna be picked for an ore node, this doesnt make it so less ore spawns
 	var/ore_variety = 1
 	var/possible_ore_nodes = 8
 	var/spawned_ore_nodes = 0 //Counter for already spawned ore nodes, dont change this
