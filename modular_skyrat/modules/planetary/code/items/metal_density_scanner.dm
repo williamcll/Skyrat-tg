@@ -18,7 +18,8 @@
 		icon_state = "mds_on[last_scan]"
 
 /obj/item/metal_density_scanner/Destroy()
-	turn_off()
+	if(turned_on)
+		turn_off()
 	return ..()
 
 /obj/item/metal_density_scanner/proc/turn_on()
