@@ -9,6 +9,6 @@ GLOBAL_LIST_EMPTY(ore_nodes_by_z_level)
 
 //Defines for metal density scanner
 #define METAL_DENSITY_NONE 0
-#define METAL_DENSITY_SMALL 1
+#define METAL_DENSITY_LOW 1
 #define METAL_DENSITY_MEDIUM 2
 #define METAL_DENSITY_HIGH 3

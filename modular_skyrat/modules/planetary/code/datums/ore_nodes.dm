@@ -1,6 +1,7 @@
 /datum/ore_node
 	var/list/ores_to_mine
 	var/range
+	var/scanner_range
 	var/x_coord
 	var/y_coord
 	var/z_coord
@@ -11,6 +12,7 @@
 	z_coord = z
 	ores_to_mine = ores
 	range = _range
+	scanner_range = range * 3
 	//Add to the global list
 	if(!GLOB.ore_nodes_by_z_level["[z]"])
 		GLOB.ore_nodes_by_z_level["[z]"] = list()
@@ -21,8 +23,25 @@
 	GLOB.ore_nodes_by_z_level["[z_coord]"] -= src
 	return ..()
 
-/datum/ore_node/proc/GetScannerDescription()
-	return "You can sense ores nearby"
+/datum/ore_node/proc/GetScannerDensity(turf/scanner_turf)
+	var/turf/my_turf = locate(x_coord, y_coord, z_coord)
+	var/dist = get_dist(my_turf,scanner_turf)
+	if(dist <= 0)
+		dist = 1
+	var/percent = 1-(dist/scanner_range)
+	var/total_density = 0
+	for(var/i in ores_to_mine)
+		total_density += ores_to_mine[i]
+	total_density *= percent
+	switch(total_density)
+		if(-INFINITY to 10)
+			. = METAL_DENSITY_NONE
+		if(10 to 30)
+			. = METAL_DENSITY_LOW
+		if(30 to 50)
+			. = METAL_DENSITY_MEDIUM
+		if(50 to INFINITY)
+			. = METAL_DENSITY_HIGH
 
 /datum/ore_node/proc/TakeRandomOre()
 	if(!length(ores_to_mine))
@@ -38,13 +57,22 @@
 		qdel(src)
 	return ore_to_return
 
-/proc/GetNearbyOreNode(x,y,z)
-	if(!GLOB.ore_nodes_by_z_level["[z]"])
+/proc/GetNearbyOreNode(turf/T)
+	if(!GLOB.ore_nodes_by_z_level["[T.z]"])
 		return
-	var/list/iterated = GLOB.ore_nodes_by_z_level["[z]"]
+	var/list/iterated = GLOB.ore_nodes_by_z_level["[T.z]"]
 	for(var/i in iterated)
 		var/datum/ore_node/ON = i
-		if(x < (ON.x_coord + ON.range) && x > (ON.x_coord - ON.range) && y < (ON.y_coord + ON.range) && y > (ON.y_coord - ON.range))
+		if(T.x < (ON.x_coord + ON.range) && T.x > (ON.x_coord - ON.range) && T.y < (ON.y_coord + ON.range) && T.y > (ON.y_coord - ON.range))
+			return ON
+
+/proc/GetOreNodeInScanRange(turf/T)
+	if(!GLOB.ore_nodes_by_z_level["[T.z]"])
+		return
+	var/list/iterated = GLOB.ore_nodes_by_z_level["[T.z]"]
+	for(var/i in iterated)
+		var/datum/ore_node/ON = i
+		if(T.x < (ON.x_coord + ON.scanner_range) && T.x > (ON.x_coord - ON.scanner_range) && T.y < (ON.y_coord + ON.scanner_range) && T.y > (ON.y_coord - ON.scanner_range))
 			return ON
 
 /obj/effect/ore_node_spawner

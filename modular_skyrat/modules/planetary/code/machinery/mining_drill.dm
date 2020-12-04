@@ -158,7 +158,7 @@
 		mining_progress_ticker -= 100
 		//Try find node if not connected
 		if(!current_node)
-			RegisterNode(GetNearbyOreNode(x,y,z))
+			RegisterNode(GetNearbyOreNode(get_turf(src)))
 		//Mine ore
 		if(current_node)
 			var/obj/item/mined = current_node.TakeRandomOre()
