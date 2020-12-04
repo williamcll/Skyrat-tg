@@ -3,6 +3,7 @@
 
 /obj/machinery/power/mining_drill
 	name = "mining drill"
+	desc = "A colossal machine for drilling deep into ground for ores. Make sure there's actually ore underneath, unless you want to mine dust. Can be connected to an external source through a terminal."
 	icon = 'modular_skyrat/modules/planetary/icons/machinery/mining_drill.dmi'
 	icon_state = "mining_drill"
 	use_power = NO_POWER_USE

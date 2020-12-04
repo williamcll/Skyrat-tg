@@ -12,14 +12,15 @@
 	///Whether our planet uses a day/night system.
 	var/day_night_system = FALSE
 	///List of possible ores, and their weight. Planetary ore node spawners care about this (Also, here's an idea: make it based off of biomes, somehow, later)
-	var/list/ore_weight
+	var/list/ore_weight = list(/obj/item/stack/ore/uranium = 5, /obj/item/stack/ore/diamond = 2, /obj/item/stack/ore/gold = 10,
+		/obj/item/stack/ore/silver = 12, /obj/item/stack/ore/plasma = 20, /obj/item/stack/ore/iron = 40, /obj/item/stack/ore/titanium = 11,
+		/obj/item/stack/ore/bluespace_crystal = 2)
 	///Multiplier of ores
-	var/ore_density = 1
+	var/ore_density = 3
 	///How many ore types are gonna be picked for an ore node, this doesnt make it so less ore spawns
-	var/ore_variety = 1
+	var/ore_variety = 5
 	var/possible_ore_nodes = 8
 	var/spawned_ore_nodes = 0 //Counter for already spawned ore nodes, dont change this
-
 
 /datum/planet_dictionary/New()
 	SeedXenoflora()
@@ -34,3 +35,6 @@
 
 /datum/planet_dictionary/proc/SeedOre()
 	return
+
+/datum/planet_dictionary/proc/MarkZLevel(z_level)
+	GLOB.planet_dict_by_z_level[z_level] = src

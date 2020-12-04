@@ -7,6 +7,8 @@
 //ORE STUFF
 GLOBAL_LIST_EMPTY(ore_nodes_by_z_level)
 
+GLOBAL_LIST_EMPTY(planet_dict_by_z_level)
+
 //Defines for metal density scanner
 #define METAL_DENSITY_NONE 0
 #define METAL_DENSITY_LOW 1
