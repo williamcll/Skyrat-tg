@@ -410,8 +410,12 @@
 	icon_state = "[icon_state][rand(1,3)]"
 
 /obj/structure/flora/rock/Destroy()
+	//SKYRAT EDIT REMOVAL BEGIN
+	/*
 	if(mineResult && mineAmount)
 		new mineResult(loc, mineAmount)
+	*/
+	//SKYRAT EDIT REMOVAL END
 	. = ..()
 
 /obj/structure/flora/rock/attackby(obj/item/W, mob/user, params)
@@ -422,6 +426,10 @@
 	to_chat(user, "<span class='notice'>You start mining...</span>")
 	if(W.use_tool(src, user, 40, volume=50))
 		to_chat(user, "<span class='notice'>You finish mining the rock.</span>")
+		//SKYRAT EDIT ADDITION BEGIN
+		if(mineResult && mineAmount)
+			new mineResult(loc, mineAmount)
+		//SKYRAT EDIT ADDITION END
 		SSblackbox.record_feedback("tally", "pick_used_mining", 1, W.type)
 		qdel(src)
 

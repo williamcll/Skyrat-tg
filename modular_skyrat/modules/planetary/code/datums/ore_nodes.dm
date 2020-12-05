@@ -12,7 +12,7 @@
 	z_coord = z
 	ores_to_mine = ores
 	range = _range
-	scanner_range = range * 2
+	scanner_range = range * 3
 	//Add to the global list
 	if(!GLOB.ore_nodes_by_z_level["[z]"])
 		GLOB.ore_nodes_by_z_level["[z]"] = list()
@@ -50,13 +50,13 @@
 		switch(ore_weight)
 			if(-INFINITY to 5)
 				described_amount = "Trace amounts"
-			if(6 to 15)
+			if(6 to 20)
 				described_amount = "Small amounts"
-			if(15 to 25)
+			if(20 to 40)
 				described_amount = "Notable amounts"
-			if(25 to 50)
+			if(40 to 70)
 				described_amount = "Large amounts"
-			if(50 to INFINITY)
+			if(70 to INFINITY)
 				described_amount = "Plentiful amounts"
 		var/described_ore
 		switch(ore_type)
@@ -94,13 +94,13 @@
 		total_density += ores_to_mine[i]
 	total_density *= percent
 	switch(total_density)
-		if(-INFINITY to 20)
+		if(-INFINITY to 10)
 			. = METAL_DENSITY_NONE
-		if(20 to 60)
+		if(10 to 70)
 			. = METAL_DENSITY_LOW
-		if(60 to 100)
+		if(70 to 150)
 			. = METAL_DENSITY_MEDIUM
-		if(100 to INFINITY)
+		if(150 to INFINITY)
 			. = METAL_DENSITY_HIGH
 
 /datum/ore_node/proc/TakeRandomOre()

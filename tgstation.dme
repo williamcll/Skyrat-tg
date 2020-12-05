@@ -3638,6 +3638,8 @@
 #include "modular_skyrat\modules\OLDChem\reactions\oldchem_reactions.dm"
 #include "modular_skyrat\modules\panicbunker\code\panicbunker.dm"
 #include "modular_skyrat\modules\pixel_shift\code\pixel_shift.dm"
+#include "modular_skyrat\modules\planetary\code\areas.dm"
+#include "modular_skyrat\modules\planetary\code\planet_verbs.dm"
 #include "modular_skyrat\modules\planetary\code\datums\fossil_datum.dm"
 #include "modular_skyrat\modules\planetary\code\datums\ore_nodes.dm"
 #include "modular_skyrat\modules\planetary\code\datums\planet_dictionary.dm"

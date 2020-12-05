@@ -16,11 +16,13 @@
 		/obj/item/stack/ore/silver = 12, /obj/item/stack/ore/plasma = 20, /obj/item/stack/ore/iron = 40, /obj/item/stack/ore/titanium = 11,
 		/obj/item/stack/ore/bluespace_crystal = 2)
 	///Multiplier of ores
-	var/ore_density = 3
+	var/ore_density = 5
 	///How many ore types are gonna be picked for an ore node, this doesnt make it so less ore spawns
 	var/ore_variety = 5
-	var/possible_ore_nodes = 8
+	var/possible_ore_nodes = 10
 	var/spawned_ore_nodes = 0 //Counter for already spawned ore nodes, dont change this
+	var/default_traits = list(ZTRAIT_BASETURF = /turf/open/floor/plating/grass/jungle)
+	var/area/my_area //Will be granted upon generation
 
 /datum/planet_dictionary/New()
 	SeedXenoflora()
@@ -37,4 +39,4 @@
 	return
 
 /datum/planet_dictionary/proc/MarkZLevel(z_level)
-	GLOB.planet_dict_by_z_level[z_level] = src
+	GLOB.planet_dict_by_z_level["[z_level]"] = src
