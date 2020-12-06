@@ -139,14 +139,17 @@
 	var/list/possible_ore_weight = list(/obj/item/stack/ore/uranium = 5, /obj/item/stack/ore/diamond = 2, /obj/item/stack/ore/gold = 10,
 		/obj/item/stack/ore/silver = 12, /obj/item/stack/ore/plasma = 20, /obj/item/stack/ore/iron = 40, /obj/item/stack/ore/titanium = 11,
 		/obj/item/stack/ore/bluespace_crystal = 2)
-	var/ore_density = 3
+	var/ore_density = 4
 	var/ore_variety = 5
 
 /obj/effect/ore_node_spawner/generous
-	ore_density = 4
+	ore_density = 5
 
 /obj/effect/ore_node_spawner/scarce
-	ore_density = 2
+	ore_density = 3
+
+/obj/effect/ore_node_spawner/varied
+	ore_variety = 8
 
 /obj/effect/ore_node_spawner/proc/SeedVariables()
 	return

@@ -52,11 +52,11 @@
 
 /obj/machinery/power/mining_drill/update_icon_state()
 	if(!anchored)
-		icon_state = "mining_drill_not_anchor"
+		icon_state = "[initial(icon_state)]_not_anchor"
 	else if(panel_open)
-		icon_state = "mining_drill_open"
+		icon_state = "[initial(icon_state)]_open"
 	else if(active && powered)
-		icon_state = "mining_drill_active0"
+		icon_state = "[initial(icon_state)]_active"
 	else
 		icon_state = initial(icon_state)
 
@@ -101,7 +101,7 @@
 /obj/machinery/power/mining_drill/screwdriver_act(mob/living/user, obj/item/I)
 	if(..())
 		return TRUE
-	default_deconstruction_screwdriver(user, "mining_drill_open", "mining_drill", I)
+	default_deconstruction_screwdriver(user, "[initial(icon_state)]_open", "[initial(icon_state)]_drill", I)
 	return TRUE
 
 /obj/machinery/power/mining_drill/can_be_unfasten_wrench(mob/user, silent)
@@ -125,6 +125,7 @@
 	. = ..()
 	if(starting_cell)
 		cell = new starting_cell
+	update_icon() //Needs to know if to use anchored/unanchored sprite
 
 /obj/machinery/power/mining_drill/proc/pass_power_check()
 	if(terminal && terminal.avail() > active_power_usage)
@@ -186,7 +187,7 @@
 
 /obj/machinery/power/mining_drill/wirecutter_act(mob/living/user, obj/item/W)
 	. = ..()
-	if (terminal && panel_open)
+	if(terminal && panel_open)
 		terminal.dismantle(user, W)
 		return TRUE
 
@@ -261,6 +262,14 @@
 
 /obj/machinery/power/mining_drill/cell
 	starting_cell = /obj/item/stock_parts/cell/high
+
+/obj/machinery/power/mining_drill/old
+	name = "old mining drill"
+	desc = "An old mining drill, with a deep well that you can't see the end of."
+	icon_state = "mining_drill_old"
+	anchored = TRUE
+	can_be_unanchored = FALSE
+	starting_cell = /obj/item/stock_parts/cell/high/empty
 
 /obj/item/circuitboard/machine/mining_drill
 	name = "Mining Drill (Machine Board)"
