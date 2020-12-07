@@ -40,3 +40,8 @@
 
 /datum/planet_dictionary/proc/MarkZLevel(z_level)
 	GLOB.planet_dict_by_z_level["[z_level]"] = src
+
+/datum/planet_dictionary/proc/random_fossil_ref()
+	if(!length(fossil_weight))
+		return
+	return pickweight(fossil_weight)
