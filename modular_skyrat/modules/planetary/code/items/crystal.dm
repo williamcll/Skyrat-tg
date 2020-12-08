@@ -51,7 +51,7 @@
 	if(I.get_sharpness() && user.Adjacent(src))
 		to_chat(user, "<span class='notice'>You carefully slice a piece off of [src]...</span>")
 		if(do_mob(user, src, 4 SECONDS))
-			if(prob(70))
+			if(prob(50))
 				to_chat(user, "<span class='notice'>You succeed, slicing a sliver off of [src].</span>")
 				splinter_off()
 			else
