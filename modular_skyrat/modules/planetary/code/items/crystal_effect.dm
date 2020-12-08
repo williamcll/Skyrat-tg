@@ -1,4 +1,5 @@
 /proc/anomaly_crystal_effect(turf/T, anom_type, anom_pow)
+	message_admins("Anomalous crystal effect was activated! [ADMIN_JMP(src)]")
 	switch(anom_type)
 		if(ANOM_CRYSTAL_FIRE)
 			var/gas_power = anom_pow/5
