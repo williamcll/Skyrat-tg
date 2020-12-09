@@ -34,6 +34,9 @@
 
 /datum/fossil/fauna/RandomizeFossil()
 	name = pick(GLOB.alien_fauna_names)
+	//
+
+	//
 	desc = "Oooh scary"
 	//Height in inches
 	//Build
