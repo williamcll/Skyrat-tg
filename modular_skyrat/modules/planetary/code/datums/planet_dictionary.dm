@@ -1,12 +1,12 @@
 /datum/planet_dictionary
 	///Name of the planet
-	var/name
+	var/name = "planet name"
 	///Description of the planet
-	var/desc
+	var/desc = "planet desc"
 	///List of possible xenofloras, and their weight //FOR BASIC FLORA - use the map generator
-	var/list/xenoflora_weight
+	var/list/xenoflora_weight = list()
 	///List of possible fossils, and their weight
-	var/list/fossil_weight
+	var/list/fossil_weight = list()
 	///Type of the planet generator we're using for the planet
 	var/datum/map_generator/planet_gen
 	///Whether our planet uses a day/night system.
@@ -23,6 +23,7 @@
 	var/spawned_ore_nodes = 0 //Counter for already spawned ore nodes, dont change this
 	var/default_traits = list(ZTRAIT_BASETURF = /turf/open/floor/plating/grass/jungle)
 	var/area/my_area //Will be granted upon generation
+	var/amber_fossils = FALSE
 
 /datum/planet_dictionary/New()
 	SeedXenoflora()
@@ -33,7 +34,12 @@
 	return
 
 /datum/planet_dictionary/proc/SeedFossils()
-	return
+	for(var/i in 1 to 1)
+		var/datum/fossil/F = new /datum/fossil(src, FOSSIL_TYPE_FAUNA)
+		fossil_weight[F] = F.rarity
+	for(var/i in 1 to 2)
+		var/datum/fossil/F = new /datum/fossil(src, FOSSIL_TYPE_FLORA)
+		fossil_weight[F] = F.rarity
 
 /datum/planet_dictionary/proc/SeedOre()
 	return

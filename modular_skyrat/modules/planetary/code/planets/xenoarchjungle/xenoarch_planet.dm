@@ -2,3 +2,4 @@
 	name = "lavaland jungle"
 	desc = "The underground jungle of lavaland."
 	planet_gen = /datum/map_generator/xenoarchjungle_generator
+	amber_fossils = TRUE

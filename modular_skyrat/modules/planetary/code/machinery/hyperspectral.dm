@@ -119,7 +119,7 @@
 		dat += "<BR><a href='?src=[REF(src)];pref=refresh'>Refresh</a>"
 
 	var/datum/browser/popup = new(user, "hyperspectral","Hyperspectral Imager", 400, 400, src)
-	popup.set_content(dat.Join("<br>"))
+	popup.set_content(dat.Join(""))
 	popup.open()
 	onclose(user, "hyperspectral")
 
