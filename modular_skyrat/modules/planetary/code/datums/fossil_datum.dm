@@ -14,20 +14,12 @@
 	///The lower the rarity the more rare it is
 	var/rarity = 10
 
-/datum/fossil/New(datum/planet_dictionary/ori, type)
+/datum/fossil/New(datum/planet_dictionary/ori)
 	origin = ori
-	RandomizeFossil(type)
+	RandomizeFossil()
 
-/datum/fossil/proc/RandomizeFossil(type)
-	fossil_type = type
-	if(fossil_type == FOSSIL_TYPE_FAUNA)
-		name = pick(GLOB.alien_fauna_names)
-		desc = "Oooh scary"
-		hints = list("scary", "stinky", "big", "did I mention scary", "horns", "frills")
-	else
-		name = pick(GLOB.alien_flora_names)
-		desc = "Oooh planty"
-		hints = list("planty", "stinky planty", "big planty", "did I mention scary planty", "horn planty", "frills planty")
+/datum/fossil/proc/RandomizeFossil()
+	return
 
 /datum/fossil/proc/get_random_hints()
 	var/list/copied = hints.Copy()
@@ -39,3 +31,15 @@
 		var/string = pick_n_take(copied)
 		returned += string
 	return returned
+
+/datum/fossil/fauna/RandomizeFossil()
+	name = pick(GLOB.alien_fauna_names)
+	desc = "Oooh scary"
+	//Height in inches
+	//Build
+	hints = list("scary", "stinky", "big", "did I mention scary", "horns", "frills")
+
+/datum/fossil/fauna/RandomizeFossil()
+	name = pick(GLOB.alien_flora_names)
+	desc = "Oooh planty"
+	hints = list("planty", "stinky planty", "big planty", "did I mention scary planty", "horn planty", "frills planty")
