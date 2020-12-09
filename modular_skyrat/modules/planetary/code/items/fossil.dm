@@ -13,7 +13,8 @@
 /obj/item/fossil/Initialize()
 	. = ..()
 	//Determine what we are
-	var/datum/planet_dictionary/PD = GLOB.planet_dict_by_z_level["[get_turf(src).z]"]
+	var/turf/T = get_turf(src)
+	var/datum/planet_dictionary/PD = GLOB.planet_dict_by_z_level["[T.z]"]
 	if(!PD)
 		qdel(src)
 		return
@@ -22,7 +23,7 @@
 		qdel(src)
 		return
 	//Inherit stuff
-	hints = fossil_ref.get_random_hints()
+	//hints = fossil_ref.get_random_hints()
 	//Set proper icon n stuff
 	icon_state = "[amber?"amber":"rock"]_[fossil_ref.fossil_type==FOSSIL_TYPE_FLORA?"flora":"fauna"]_[rand(1,7)]"
 	desc = "You see a fossil of some sort of a [fossil_ref.fossil_type==FOSSIL_TYPE_FLORA?"plant":"creature"], it is encased in [amber?"amber":"rock"]"

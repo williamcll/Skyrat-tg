@@ -1,5 +1,5 @@
 /proc/anomaly_crystal_effect(turf/T, anom_type, anom_pow)
-	message_admins("Anomalous crystal effect was activated! [ADMIN_JMP(src)]")
+	message_admins("Anomalous crystal effect was activated, with a power of [anom_pow]! [ADMIN_JMP(T)]")
 	switch(anom_type)
 		if(ANOM_CRYSTAL_FIRE)
 			var/gas_power = anom_pow/5
@@ -7,7 +7,7 @@
 		if(ANOM_CRYSTAL_EMP)
 			var/heavy = round((anom_pow-20)/40)
 			var/light = round(anom_pow+20/20)
-			empulse(src, light, heavy)
+			empulse(T, light, heavy)
 		if(ANOM_CRYSTAL_ELECTRIC)
 			var/power = anom_pow*70
 			do_sparks(3, TRUE, T)
@@ -39,7 +39,7 @@
 				if(!O.anchored)
 					if(T.intact && HAS_TRAIT(O, TRAIT_T_RAY_VISIBLE))
 						continue
-					var/mob/living/target = locate() in view(4,src)
+					var/mob/living/target = locate() in view(4,T)
 					if(target && !target.stat)
 						O.throw_at(target, 5, 10)
 		if(ANOM_CRYSTAL_RESIN_FOAM)

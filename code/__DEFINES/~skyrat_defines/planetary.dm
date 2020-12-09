@@ -32,3 +32,6 @@ GLOBAL_LIST_EMPTY(planet_dict_by_z_level)
 
 #define ANOM_CRYSTAL_CHEM_REACT_ACID 1
 #define ANOM_CRYSTAL_CHEM_REACT_AMMONIA 2
+
+//SPECTROMETER DESCRIPTION DEFINES
+#define SPECTROMETER_CRYSTAL_POWDER "The powder seems to be emitting exotic energy, and kept sparkling during the scan.<BR>Unknown reactions were happening when the powder was subjected to UV light.<BR>Deteriorating the powder could prove to get better results."

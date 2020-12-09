@@ -1,11 +1,8 @@
 /datum/reagent/crystal_powder
-	data = list("type"=null,"color"=null,"chem_react"=null,"res_react"=null)
+	data = list("type"=null,"color"=null,"chem_react"=null,"res_react"=null,"spectrometer"=SPECTROMETER_CRYSTAL_POWDER)
 	name = "Crystal Powder"
 	taste_description = "powdered orangeade"
 	taste_mult = 1.3
-
-/datum/reagent/crystal_powder/on_merge(list/_data)
-	data = _data.Copy()
 
 /datum/reagent/crystal_powder/on_new(list/data)
 	if(istype(data) && data["color"])

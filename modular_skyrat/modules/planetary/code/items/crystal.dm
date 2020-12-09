@@ -30,7 +30,13 @@
 	. = ..()
 	grind_results = list()
 	reagents = new()
-	reagents.add_reagent(/datum/reagent/crystal_powder, power, list("type"=anom_type,"color"=color,"chem_react"=chem_reactant,"res_react"=research_reactant))
+	var/spectro_data = SPECTROMETER_CRYSTAL_POWDER
+	switch(chem_reactant)
+		if(ANOM_CRYSTAL_CHEM_REACT_ACID)
+			spectro_data += "<BR>The sample shimmered red during the scans."
+		if(ANOM_CRYSTAL_CHEM_REACT_AMMONIA)
+			spectro_data += "<BR>The sample shimmered blue during the scans."
+	reagents.add_reagent(/datum/reagent/crystal_powder, power, list("type"=anom_type,"color"=color,"chem_react"=chem_reactant,"res_react"=research_reactant,"spectrometer"=spectro_data))
 
 /obj/item/anomalous_sliver/crystal
 	name = "anomalous crystal"
@@ -60,8 +66,14 @@
 				slivers_remaining--
 				power -= 20
 				anomaly_crystal_effect(get_turf(src), anom_type, 20)
+		return TRUE
+	if(istype(I, /obj/item/core_sampler))
+		var/obj/item/core_sampler/CS = I
+		if(!CS.extracted_sample)
+			CS.on_sample_extracted(user,splinter_off())
 			return TRUE
-		return FALSE
+		to_chat(user, "<span class='warning'>Eject the sample first!</span>")
+		return TRUE
 	else
 		return ..()
 

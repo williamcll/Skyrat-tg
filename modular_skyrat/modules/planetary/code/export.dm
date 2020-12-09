@@ -1,0 +1,10 @@
+/datum/export/anomalous_crystal
+	cost = 1500
+	unit_name = "anomalous crystal"
+	export_types = list(/obj/item/anomalous_sliver/crystal)
+
+/datum/export/fossil
+	cost = 500
+	unit_name = "fossil"
+	export_types = list(/obj/item/fossil)
+	include_subtypes = TRUE
