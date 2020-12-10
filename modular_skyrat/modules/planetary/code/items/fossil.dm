@@ -35,4 +35,4 @@
 	//You can see hints, provided you got research vision
 	if(user.research_scanner)
 		for(var/hint in hints)
-			to_chat(user, "<span class='notice'>[hint]</span>")
+			. += "<span class='notice'>[hint]</span>"

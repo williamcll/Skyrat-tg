@@ -34,10 +34,10 @@
 	return
 
 /datum/planet_dictionary/proc/SeedFossils()
-	for(var/i in 1 to 1)
+	for(var/i in 1 to 7)
 		var/datum/fossil/F = new /datum/fossil/fauna(src)
 		fossil_weight[F] = F.rarity
-	for(var/i in 1 to 2)
+	for(var/i in 1 to 1)
 		var/datum/fossil/F = new /datum/fossil/flora(src)
 		fossil_weight[F] = F.rarity
 

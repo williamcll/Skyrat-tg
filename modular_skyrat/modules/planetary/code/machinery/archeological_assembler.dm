@@ -130,6 +130,7 @@ GLOBAL_LIST_EMPTY(discovered_fossils)
 				index++
 				var/obj/item/fossil/FS = i
 				dat += "<BR><b>[FS.name]</b> <a href='?src=[REF(src)];pref=eject;slot=[index]'>Eject</a>"
+				dat += "<BR>It's a [FS.fossil_type == FOSSIL_TYPE_FLORA ? "flora" : "fauna"]"
 				for(var/hint in FS.hints)
 					dat += "<BR><i>[hint]</i>"
 			if(length(loaded_fossils) >= 3)
