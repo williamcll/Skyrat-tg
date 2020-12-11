@@ -879,8 +879,12 @@
 
 /mob/living/carbon/can_be_revived()
 	. = ..()
-	if(!getorgan(/obj/item/organ/brain) && (!mind || !mind.has_antag_datum(/datum/antagonist/changeling)))
+	if(!getorgan(/obj/item/organ/brain) && (!mind || !mind.has_antag_datum(/datum/antagonist/changeling)) || HAS_TRAIT(src, TRAIT_HUSK))
 		return FALSE
+//SKYRAT EDIT ADDITION BEGIN - TRAIT_DNR
+	if(HAS_TRAIT(src, TRAIT_DNR))
+		return FALSE
+//SKYRAT EDIT ADDITION END
 
 /mob/living/carbon/proc/can_defib()
 	if (suiciding)
@@ -1291,6 +1295,14 @@
 /// Special carbon interaction on lying down, to transform its sprite by a rotation.
 /mob/living/carbon/proc/lying_angle_on_lying_down(new_lying_angle)
 	if(!new_lying_angle)
+		//SKYRAT EDIT ADDITION BEGIN
+		if(dir == WEST)
+			set_lying_angle(270)
+			return
+		else if(dir == EAST)
+			set_lying_angle(90)
+			return
+		//SKYRAT EDIT END
 		set_lying_angle(pick(90, 270))
 	else
 		set_lying_angle(new_lying_angle)

@@ -180,6 +180,14 @@
 	diag_hud_set_borgcell()
 	logevent("System brought online.")
 
+	// SKYRAT EDIT ADDITION BEGIN - Cyborg PDA
+	if(!shell)
+		aiPDA = new/obj/item/pda/ai(src)
+		aiPDA.owner = real_name
+		aiPDA.ownjob = "Cyborg"
+		aiPDA.name = real_name + " (" + aiPDA.ownjob + ")"
+	//SKYRAT EDIT ADDITION END
+
 /mob/living/silicon/robot/proc/create_modularInterface()
 	if(!modularInterface)
 		modularInterface = new /obj/item/modular_computer/tablet/integrated(src)
@@ -844,9 +852,16 @@
 		hud_used.update_robot_modules_display()
 
 	if (hasExpanded)
-		resize = 0.5
+		//resize = 0.5 //ORIGINAL
+		resize = 0.8 //SKYRAT EDIT CHANGE - CYBORG
 		hasExpanded = FALSE
 		update_transform()
+	//SKYRAT EDIT ADDITION BEGIN - CYBORG
+	if (hasShrunk)
+		hasShrunk = FALSE
+		resize = (4/3)
+		update_transform()
+	//SKYRAT EDIT ADDITION END
 	logevent("Chassis configuration has been reset.")
 	module.transform_to(/obj/item/robot_module)
 
@@ -906,9 +921,12 @@
 ///Use this to add upgrades to robots. It'll register signals for when the upgrade is moved or deleted, if not single use.
 /mob/living/silicon/robot/proc/add_to_upgrades(obj/item/borg/upgrade/new_upgrade, mob/user)
 	if(new_upgrade in upgrades)
-		return
+		return FALSE
+	if(!user.temporarilyRemoveItemFromInventory(new_upgrade)) //calling the upgrade's dropped() proc /before/ we add action buttons
+		return FALSE
 	if(!new_upgrade.action(src, user))
 		to_chat(user, "<span class='danger'>Upgrade error.</span>")
+		new_upgrade.forceMove(loc) //gets lost otherwise
 		return FALSE
 	to_chat(user, "<span class='notice'>You apply the upgrade to [src].</span>")
 	to_chat(src, "----------------\nNew hardware detected...Identified as \"<b>[new_upgrade]</b>\"...Setup complete.\n----------------")
@@ -1157,3 +1175,10 @@
 	var/datum/computer_file/program/robotact/program = modularInterface.get_robotact()
 	if(program)
 		program.force_full_update()
+
+// SKYRAT EDIT ADDITION BEGIN - Cyborg PDA
+/mob/living/silicon/robot/replace_identification_name(oldname,newname)
+	if(aiPDA && !shell)
+		aiPDA.owner = newname
+		aiPDA.name = newname + " (" + aiPDA.ownjob + ")"
+// SKYRAT EDIT ADDITION END
