@@ -3686,6 +3686,7 @@
 #include "modular_skyrat\modules\planetary\code\items\crystal.dm"
 #include "modular_skyrat\modules\planetary\code\items\crystal_chemistry.dm"
 #include "modular_skyrat\modules\planetary\code\items\crystal_effect.dm"
+#include "modular_skyrat\modules\planetary\code\items\excavation_artifacts.dm"
 #include "modular_skyrat\modules\planetary\code\items\excavation_tools.dm"
 #include "modular_skyrat\modules\planetary\code\items\fossil.dm"
 #include "modular_skyrat\modules\planetary\code\items\metal_density_scanner.dm"

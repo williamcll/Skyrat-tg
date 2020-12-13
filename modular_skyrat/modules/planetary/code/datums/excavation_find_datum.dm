@@ -21,4 +21,12 @@ GLOBAL_LIST_INIT(excavation_finds_weight, InitExcavFinds())
 
 /datum/excavation_find/anomalous_crystal
 	type_to_spawn = /obj/item/anomalous_sliver/crystal
-	weight = 20
+	weight = 15
+
+/datum/excavation_find/excavation_junk
+	type_to_spawn = /obj/item/excavation_junk
+	weight = 15
+
+/datum/excavation_find/strange_seed
+	type_to_spawn = /obj/item/seeds/random
+	weight = 5

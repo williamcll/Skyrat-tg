@@ -89,10 +89,12 @@
 
 	if(istype(I, /obj/item/excavation_depth_scanner))
 		var/first_artifact_depth
+		var/datum/excavation_find/first_pick
 		for(var/i in find_list)
 			first_artifact_depth = i
+			first_pick = find_list[i]
 			break
-		to_chat(user, "<span class='notice'>The scanner shows the next curiosity at the depth of [first_artifact_depth] centimeters.</span>")
+		to_chat(user, "<span class='notice'>Anomalous reading at the depth of [first_artifact_depth] cm, approximating clearance of [first_pick.clearance] cm.</span>")
 		return COMPONENT_NO_AFTERATTACK
 
 	return FALSE
