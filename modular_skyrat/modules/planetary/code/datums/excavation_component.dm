@@ -1,7 +1,7 @@
 #define ARTIFACTS_LOW_RAND 1
 #define ARTIFACTS_HIGH_RAND 4
 
-#define DIG_DEPTH_LOW 10
+#define DIG_DEPTH_LOW 9
 #define DIG_DEPTH_HIGH 36
 
 /datum/component/turf_excavation
