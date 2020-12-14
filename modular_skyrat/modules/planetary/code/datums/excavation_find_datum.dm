@@ -8,12 +8,12 @@ GLOBAL_LIST_INIT(excavation_finds_weight, InitExcavFinds())
 	return returned
 
 /datum/excavation_find
-	var/clearance
+	var/clearance //Internal
 	var/type_to_spawn
 	var/weight = 10
 
 /datum/excavation_find/New()
-	clearance = rand(1,3)
+	clearance = rand(1,4)
 
 /datum/excavation_find/fossil
 	type_to_spawn = /obj/item/fossil
@@ -23,10 +23,21 @@ GLOBAL_LIST_INIT(excavation_finds_weight, InitExcavFinds())
 	type_to_spawn = /obj/item/anomalous_sliver/crystal
 	weight = 15
 
+//Doesnt do anything, just flavor
 /datum/excavation_find/excavation_junk
 	type_to_spawn = /obj/item/excavation_junk
 	weight = 15
 
 /datum/excavation_find/strange_seed
 	type_to_spawn = /obj/item/seeds/random
+	weight = 5
+
+//Currently doesnt do anything, placeholder
+/datum/excavation_find/unknown_artifact
+	type_to_spawn = /obj/item/unknown_artifact
+	weight = 5
+
+//Guess this can exist until more stuff is introduced
+/datum/excavation_find/relic
+	type_to_spawn = /obj/item/relic
 	weight = 5

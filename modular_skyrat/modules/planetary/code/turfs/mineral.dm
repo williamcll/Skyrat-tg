@@ -1,9 +1,9 @@
 /turf/closed/mineral/Initialize()
 	. = ..()
-	if(prob(3))
+	if(prob(2))
 		AddComponent(/datum/component/turf_excavation)
 
 /turf/open/floor/plating/dirt/jungle/wasteland/Initialize()
 	. = ..()
-	if(prob(5))
+	if(prob(4))
 		AddComponent(/datum/component/turf_excavation)

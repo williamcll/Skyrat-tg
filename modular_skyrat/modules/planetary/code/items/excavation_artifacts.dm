@@ -24,3 +24,14 @@
 			name = "ancient instrument"
 			desc = "An ancient instrument, you can't wrap your head around on how to even begin to play that."
 			icon_state = "instrument"
+
+/obj/item/unknown_artifact
+	name = "unknown artifact"
+	desc = "An intricate artifact, from a glance you can tell that this is way more advanced than pottery."
+	icon = 'modular_skyrat/modules/planetary/icons/items/excavation_unknown.dmi'
+	icon_state = "unknown1"
+	w_class = WEIGHT_CLASS_SMALL
+
+/obj/item/unknown_artifact/Initialize()
+	. = ..()
+	icon_state = "unknown[rand(1,4)]"
