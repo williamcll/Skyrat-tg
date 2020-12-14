@@ -1,9 +1,6 @@
 #define FOSSIL_TYPE_FLORA 1
 #define FOSSIL_TYPE_FAUNA 2
 
-//XENOFLORA TRAITS (non-seed traits)
-#define XENOFLORA_PRICKLY 1 //Used for lavaland cactus
-
 //ORE STUFF
 GLOBAL_LIST_EMPTY(ore_nodes_by_z_level)
 
@@ -35,3 +32,11 @@ GLOBAL_LIST_EMPTY(planet_dict_by_z_level)
 
 //SPECTROMETER DESCRIPTION DEFINES
 #define SPECTROMETER_CRYSTAL_POWDER "The powder seems to be emitting exotic energy, and kept sparkling during the scan.<BR>Unknown reactions were happening when the powder was subjected to UV light.<BR>Deteriorating the powder could prove to get better results."
+
+//SEED STRUCTURE TRAITS
+#define SEED_FLORA_AGITATIVE (1<<0) //Does all sorts of fun stuff, based off the seed's plant, DANGEROUS
+#define SEED_FLORA_LOW_HANGING (1<<1) //Will make the produce drop on the floor when the structure is walked by, makes squishy and slippery effects fun
+#define SEED_FLORA_CALTROPS (1<<2) //Acts as a caltrop, much like lavaland cactus
+//vvv should be traits
+#define SEED_FLORA_SPORE_EMISSION (1<<3) //The plant will emitt spores from time to time, which is a gas cloud with their reagents
+#define SEED_FLORA_FRAGILE (1<<4) //Gives the plant a chance to squash the produce when harvesting it
