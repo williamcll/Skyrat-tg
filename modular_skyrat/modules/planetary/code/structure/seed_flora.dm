@@ -25,13 +25,38 @@
 
 	var/structure_traits = NONE
 
+	var/agitate_cooldown = 120 SECONDS
+	var/next_agitate = 0
+	var/list/agitate_registered_turfs
+
 /obj/structure/flora/seed/proc/InitSeed()
 	myseed = new seedtype()
+
+/obj/structure/flora/seed/proc/CleanSeed()
+	qdel(myseed)
 
 /obj/structure/flora/seed/Initialize()
 	. = ..()
 	icon_state = base_icon
 	InitSeed()
+	if(structure_traits & SEED_FLORA_AGITATIVE)
+		agitate_registered_turfs = list()
+		for(var/t in get_adjacent_open_turfs(src))
+			agitate_registered_turfs += t
+			RegisterSignal(t, COMSIG_ATOM_ENTERED, .proc/agitate_proximity)
+
+/obj/structure/flora/seed/Destroy()
+	CleanSeed()
+	if(agitate_registered_turfs)
+		for(var/t in agitate_registered_turfs)
+			UnregisterSignal(t, COMSIG_ATOM_ENTERED)
+		agitate_registered_turfs.Cut()
+	return ..()
+
+/obj/structure/flora/seed/proc/agitate_proximity(datum/source, atom/movable/AM)
+	if(!ishuman(AM))
+		return
+	try_agitate(AM)
 
 /obj/structure/flora/seed/proc/harvest(user)
 	if(harvested)
@@ -47,18 +72,22 @@
 				msg = harvest_message_high
 			to_chat(user, "<span class='notice'>[msg]</span>")
 		for(var/i in 1 to rand_harvested)
-			var/obj/item/produce = new myseed.product(get_turf(src), myseed)
-			if(myseed.plantname != initial(myseed.plantname))
-				produce.name = lowertext(myseed.plantname)
-			if(myseed.productdesc)
-				produce.desc = myseed.productdesc
+			new myseed.product(get_turf(src), myseed)
 
+	post_harvest()
+	return TRUE
+
+/obj/structure/flora/seed/proc/drop_produce(user)
+	var/obj/item/food/grown/G = new myseed.product(get_turf(src), myseed)
+	G.audible_message("<span class='notice'>[G] drops down to the ground.</span>")
+	post_harvest()
+
+/obj/structure/flora/seed/proc/post_harvest()
 	icon_state = "[base_icon]p"
 	name = harvested_name
 	desc = harvested_desc
 	harvested = TRUE
 	addtimer(CALLBACK(src, .proc/regrow), rand(regrowth_time_low, regrowth_time_high))
-	return TRUE
 
 /obj/structure/flora/seed/proc/regrow()
 	icon_state = base_icon
@@ -87,6 +116,7 @@
 		if(do_after(user, harvest_time, target = src))
 			harvest(user)
 	else
+		try_agitate(user)
 		return ..()
 
 /obj/structure/flora/seed/attack_hand(mob/user)
@@ -98,10 +128,37 @@
 		if(do_after(user, harvest_time, target = src))
 			harvest(user)
 
+/obj/structure/flora/seed/Cross(atom/movable/O)
+	. = ..()
+	if(. && !harvested && (structure_traits & SEED_FLORA_LOW_HANGING))
+		if(ishuman(O))
+			var/mob/living/carbon/human/H = O
+			drop_produce(H)
+
+/obj/structure/flora/seed/proc/try_agitate(atom/target)
+	if(next_agitate > world.time || harvested)
+		return
+	next_agitate = world.time + agitate_cooldown
+	for(var/datum/plant_gene/trait/T in myseed.genes)
+		T.on_flora_agitated(src, target)
+
 /obj/structure/flora/seed/xenoflora
 	var/xenoflora_type
 	var/datum/research_info/xenoflora/xenoflora_ref
 
 /obj/structure/flora/seed/xenoflora/InitSeed()
 	var/datum/research_info/xenoflora/XF = GLOB.all_research_infos[xenoflora_type]
+	xenoflora_ref = XF
 	structure_traits = XF.structure_traits
+
+/obj/structure/flora/seed/xenoflora/CleanSeed()
+	xenoflora_ref = null
+
+/obj/structure/flora/seed/xenoflora/jungle_glowy
+	name = "glowy plant"
+	var/glow_color
+
+/obj/structure/flora/seed/xenoflora/jungle_glowy/InitSeed()
+	..()
+	for(var/datum/plant_gene/trait/glow/G in myseed.genes)
+		glow_color = G.glow_color
