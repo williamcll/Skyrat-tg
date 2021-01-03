@@ -39,6 +39,8 @@
 	///are we registered in SSshuttles?
 	var/registered = FALSE
 
+	var/datum/overmap_object/shuttle/my_overmap_object
+
 	///register to SSshuttles
 /obj/docking_port/proc/register()
 	if(registered)
@@ -537,7 +539,17 @@
 		mode = SHUTTLE_IDLE
 		return
 	previous = null
-	if(!destination)
+	if(destination == "overmap")
+		destination = null
+		timer = INFINITY
+		var/datum/space_level/S = SSmapping.get_level(z)
+		var/datum/overmap_object/current_overmap_object = S.related_overmap_object
+		if(!current_overmap_object)
+			WARNING("NO CURRENT OVERMAP OBJECT WHEN ATTEMPT TO GO TO OVERMAP.")
+		var/datum/overmap_object/shuttle/spawned_shuttle = new /datum/overmap_object/shuttle(current_overmap_object.current_system, current_overmap_object.x, current_overmap_object.y)
+		my_overmap_object = spawned_shuttle
+		spawned_shuttle.my_shuttle = src
+	else if(!destination)
 		// sent to transit with no destination -> unlimited timer
 		timer = INFINITY
 	var/obj/docking_port/stationary/S0 = get_docked()

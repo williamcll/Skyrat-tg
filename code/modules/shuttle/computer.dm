@@ -19,6 +19,18 @@
 	var/locked = FALSE
 	/// Authorization request cooldown to prevent request spam to admin staff
 	COOLDOWN_DECLARE(request_cooldown)
+	var/uses_overmap = TRUE
+
+/obj/machinery/computer/shuttle/attack_hand(mob/user)
+	var/obj/docking_port/mobile/M = SSshuttle.getShuttle(shuttleId)
+	if(M.my_overmap_object)
+		//Camera control
+		if(user.client)
+			user.client.perspective = EYE_PERSPECTIVE
+			user.client.eye = M.my_overmap_object.my_visual
+			user.update_parallax_contents()
+		return TRUE
+	return ..()
 
 /obj/machinery/computer/shuttle/Initialize(mapload)
 	. = ..()
@@ -109,6 +121,12 @@
 				if(M.mode != SHUTTLE_IDLE)
 					to_chat(usr, "<span class='warning'>Shuttle already in transit.</span>")
 					return
+			if(uses_overmap)
+				M.destination = "overmap"
+				M.mode = SHUTTLE_IGNITING
+				M.setTimer(5 SECONDS)
+				return
+			
 			var/list/options = params2list(possible_destinations)
 			var/obj/docking_port/stationary/S = SSshuttle.getDock(params["shuttle_id"])
 			if(!(S.port_destinations in options))
@@ -124,6 +142,7 @@
 					to_chat(usr, "<span class='warning'>Invalid shuttle requested.</span>")
 				else
 					to_chat(usr, "<span class='warning'>Unable to comply.</span>")
+			
 		if("set_destination")
 			var/target_destination = params["destination"]
 			if(target_destination)

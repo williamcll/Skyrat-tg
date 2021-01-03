@@ -7,11 +7,13 @@ SUBSYSTEM_DEF(overmap)
 	var/datum/overmap_sun_system/main_system
 
 /datum/controller/subsystem/overmap/Initialize()
+	return ..()
+
+/datum/controller/subsystem/overmap/proc/MappingInit()
 	//Initialize sun systems
 	var/datum/overmap_sun_system/first_system = new /datum/overmap_sun_system()
 	main_system = first_system
 	sun_systems += first_system
-	. = ..()
 
 /datum/controller/subsystem/overmap/proc/get_main_sun_system()
 	return main_system
