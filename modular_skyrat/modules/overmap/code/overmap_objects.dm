@@ -9,6 +9,13 @@
 	var/datum/space_level/my_space_level
 	var/z_level = 0 //Easier lookup
 
+/datum/overmap_sun_system/proc/GetObjectsInRadius(_x,_y,rad)
+	. = list()
+	for(var/i in overmap_objects)
+		var/datum/overmap_object/OO = i
+		if(OO.x <= _x + rad && OO.x >= _x - rad && OO.y <= _y + rad && OO.y >= _y - rad)
+			. += OO
+
 /datum/overmap_sun_system/New()
 	SSmapping.add_new_zlevel("Sun system [name]", list(ZTRAIT_LINKAGE = UNAFFECTED))
 	z_level = world.maxz
@@ -25,11 +32,52 @@
 
 	var/list/related_levels = list()
 
+/datum/overmap_object/proc/update_visual_position()
+	if(my_visual)
+		my_visual.x = x
+		my_visual.y = y
+
+/datum/overmap_object/process(delta_time)
+	return
+
 /datum/overmap_object/shuttle
 	name = "Shuttle"
 	icon = 'icons/obj/plushes.dmi'
 	icon_state = "plushie_lizard"
 	var/obj/docking_port/mobile/my_shuttle = null
+	var/do_move = FALSE
+	var/destination_x = 0
+	var/destination_y = 0
+	var/angle = 0
+	var/engine_speed = 0
+
+/datum/overmap_object/shuttle/process(delta_time)
+	//var/datum/point/vector/V = new(x, y, 0, 0, 0, angle)
+	if(x != destination_x)
+		if(destination_x > x)
+			x++
+		else
+			x--
+	if(y != destination_y)
+		if(destination_y > y)
+			y++
+		else
+			y--
+	update_visual_position()
+	if(y==destination_y && x==destination_x)
+		StopMove()
+
+/datum/overmap_object/shuttle/proc/CommandMove(dest_x, dest_y)
+	destination_y = dest_y
+	destination_x = dest_x
+	if(!do_move)
+		do_move = TRUE
+		START_PROCESSING(SSfastprocess, src)
+
+/datum/overmap_object/shuttle/proc/StopMove()
+	if(do_move)
+		do_move = FALSE
+		STOP_PROCESSING(SSfastprocess, src)
 
 /datum/overmap_object/ruins
 	name = "Cluster of ruins"

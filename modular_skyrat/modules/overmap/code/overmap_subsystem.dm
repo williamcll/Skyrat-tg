@@ -2,7 +2,7 @@ SUBSYSTEM_DEF(overmap)
 	name = "Overmap"
 	init_order = INIT_ORDER_MAPPING + 1 //Always before mapping
 	runlevels = RUNLEVEL_GAME | RUNLEVEL_POSTGAME
-	wait = 2 SECONDS
+	wait = 0.5 SECONDS
 	var/list/sun_systems = list()
 	var/datum/overmap_sun_system/main_system
 

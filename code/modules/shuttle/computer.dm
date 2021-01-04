@@ -24,12 +24,13 @@
 /obj/machinery/computer/shuttle/attack_hand(mob/user)
 	var/obj/docking_port/mobile/M = SSshuttle.getShuttle(shuttleId)
 	if(M.my_overmap_object)
+		if(!M.shuttle_controller)
+			M.shuttle_controller = new(M)
+			M.possible_destinations = possible_destinations
 		//Camera control
-		if(user.client)
-			user.client.perspective = EYE_PERSPECTIVE
-			user.client.eye = M.my_overmap_object.my_visual
-			user.update_parallax_contents()
-		return TRUE
+		if(user.client && !M.shuttle_controller.busy)
+			M.shuttle_controller.SetController(user)
+			return TRUE
 	return ..()
 
 /obj/machinery/computer/shuttle/Initialize(mapload)
