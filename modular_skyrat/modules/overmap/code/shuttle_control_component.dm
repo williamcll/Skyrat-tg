@@ -35,6 +35,8 @@
 	stop_shuttle_button.Grant(mob_controller)
 
 /datum/overmap_shuttle_controller/proc/RemoveCurrentControl()
+	if(freeform_docker)
+		AbortFreeform()
 	UnregisterSignal(mob_controller, COMSIG_CLICKON)
 	mob_controller.client.perspective = MOB_PERSPECTIVE
 	mob_controller.client.eye = mob_controller
@@ -43,6 +45,15 @@
 	try_dock_button.Remove(mob_controller)
 	stop_shuttle_button.Remove(mob_controller)
 	mob_controller = null
+
+/datum/overmap_shuttle_controller/proc/AbortFreeform()
+	if(!freeform_docker)
+		return
+	freeform_docker.remove_eye_control()
+	qdel(freeform_docker)
+	mob_controller.client.perspective = EYE_PERSPECTIVE
+	mob_controller.client.eye = shuttle.my_overmap_object.my_visual
+	mob_controller.update_parallax_contents()
 
 /datum/overmap_shuttle_controller/proc/ControllerClick(datum/source, atom/A, params)
 	SIGNAL_HANDLER
@@ -145,10 +156,10 @@
 /datum/shuttle_freeform_docker
 	var/mob/camera/ai_eye/remote/shuttle_freeform/eyeobj
 	var/datum/overmap_shuttle_controller/my_controller
-	var/datum/action/innate/camera_off/off_action = new
-	var/datum/action/innate/camera_jump/jump_action = new
-	var/datum/action/innate/shuttledocker_rotate/rotate_action = new
-	var/datum/action/innate/shuttledocker_place/place_action = new
+	var/datum/action/innate/freeform_docker_abort/abort_action
+	var/datum/action/innate/freeform_docker_jump_view/jump_action
+	var/datum/action/innate/freeform_docker_rotate/rotate_action
+	var/datum/action/innate/freeform_docker_place/place_action
 	var/view_range = 0
 	var/x_offset = 0
 	var/y_offset = 0
@@ -173,7 +184,30 @@
 	var/list/placement_images = list()
 	var/list/placed_images = list()
 
+/datum/shuttle_freeform_docker/Destroy()
+	abort_action.target = null
+	qdel(abort_action)
+	jump_action.target = null
+	qdel(jump_action)
+	rotate_action.target = null
+	qdel(rotate_action)
+	place_action.target = null
+	qdel(place_action)
+	my_controller.freeform_docker = null
+	my_controller = null
+	QDEL_LIST(placement_images)
+	qdel(eyeobj)
+	return ..()
+
 /datum/shuttle_freeform_docker/New(datum/overmap_shuttle_controller/passed_controller, mob/user, z)
+	abort_action = new
+	abort_action.target = src
+	jump_action = new
+	jump_action.target = src
+	rotate_action = new
+	rotate_action.target = src
+	place_action = new
+	place_action.target = src
 	my_controller = passed_controller
 	z_level = z
 	current_user = user
@@ -184,7 +218,8 @@
 	eyeobj = new()
 	eyeobj.origin = src
 	var/obj/docking_port/mobile/my_shuttle = my_controller.shuttle
-	eyeobj.setDir(my_shuttle.dir)
+	direction = my_shuttle.dir
+	eyeobj.setDir(direction)
 	var/turf/origin = locate(my_shuttle.x + x_offset, my_shuttle.y + y_offset, my_shuttle.z)
 	for(var/V in my_shuttle.shuttle_areas)
 		var/area/A = V
@@ -265,21 +300,16 @@
 				return SHUTTLE_DOCKER_BLOCKED
 
 /datum/shuttle_freeform_docker/proc/GrantActions()
-	if(off_action)
-		off_action.target = current_user
-		off_action.Grant(current_user)
+	abort_action.Grant(current_user)
+	jump_action.Grant(current_user)
+	rotate_action.Grant(current_user)
+	place_action.Grant(current_user)
 
-	if(jump_action)
-		jump_action.target = current_user
-		jump_action.Grant(current_user)
-
-	if(rotate_action)
-		rotate_action.target = current_user
-		rotate_action.Grant(current_user)
-
-	if(place_action)
-		place_action.target = current_user
-		place_action.Grant(current_user)
+/datum/shuttle_freeform_docker/proc/RemoveActions()
+	abort_action.Remove(current_user)
+	jump_action.Remove(current_user)
+	rotate_action.Remove(current_user)
+	place_action.Remove(current_user)
 
 /datum/shuttle_freeform_docker/proc/StartCameraView()
 	if(!eyeobj)
@@ -293,13 +323,13 @@
 		eyeobj.setLoc(camera_location)
 
 /datum/shuttle_freeform_docker/proc/give_eye_control()
-	//GrantActions(current_user)
+	GrantActions()
 	eyeobj.eye_user = current_user
 	eyeobj.name = "Camera Eye ([current_user.name])"
 	current_user.remote_control = eyeobj
 	current_user.reset_perspective(eyeobj)
 	eyeobj.setLoc(eyeobj.loc)
-	if(should_supress_view_changes)
+	if(should_supress_view_changes && current_user.client)
 		current_user.client.view_size.supress()
 	var/list/to_add = list()
 	to_add += placement_images
@@ -308,21 +338,83 @@
 	//current_user.client.view_size.setTo(view_range)
 
 /datum/shuttle_freeform_docker/proc/remove_eye_control()
-	//REMOVE ACTIONS
+	RemoveActions()
 	if(current_user.client)
 		current_user.reset_perspective(null)
 		if(eyeobj.visible_icon && current_user.client)
 			current_user.client.images -= eyeobj.user_image
 		current_user.client.view_size.unsupress()
 
-	var/list/to_remove = list()
-	to_remove += placement_images
-	to_remove += placed_images
-	current_user.client.images -= to_remove
+	if(current_user.client)
+		var/list/to_remove = list()
+		to_remove += placement_images
+		to_remove += placed_images
+		current_user.client.images -= to_remove
 	//current_user.client.view_size.resetToDefault()
 
 	eyeobj.eye_user = null
 	current_user.remote_control = null
 	current_user = null
-	current_user.unset_machine()
 	//playsound(src, 'sound/machines/terminal_off.ogg', 25, FALSE)
+
+/datum/action/innate/freeform_docker_abort
+	name = "Abort Docking"
+	icon_icon = 'icons/mob/actions/actions_mecha.dmi'
+	button_icon_state = "mech_cycle_equip_off"
+
+/datum/action/innate/freeform_docker_abort/Activate()
+	/*
+	if(QDELETED(target) || !isliving(target))
+		return
+	var/mob/living/C = target
+	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
+	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
+	origin.rotateLandingSpot()
+	*/
+	var/datum/shuttle_freeform_docker/docker = target
+	docker.my_controller.AbortFreeform()
+
+/datum/action/innate/freeform_docker_jump_view
+	name = "Jump View To Vista"
+	icon_icon = 'icons/mob/actions/actions_mecha.dmi'
+	button_icon_state = "mech_cycle_equip_off"
+
+/datum/action/innate/freeform_docker_jump_view/Activate()
+	/*
+	if(QDELETED(target) || !isliving(target))
+		return
+	var/mob/living/C = target
+	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
+	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
+	origin.rotateLandingSpot()
+	*/
+
+/datum/action/innate/freeform_docker_rotate
+	name = "Rotate"
+	icon_icon = 'icons/mob/actions/actions_mecha.dmi'
+	button_icon_state = "mech_cycle_equip_off"
+
+/datum/action/innate/freeform_docker_rotate/Activate()
+	/*
+	if(QDELETED(target) || !isliving(target))
+		return
+	var/mob/living/C = target
+	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
+	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
+	origin.rotateLandingSpot()
+	*/
+
+/datum/action/innate/freeform_docker_place
+	name = "Engage Docking"
+	icon_icon = 'icons/mob/actions/actions_mecha.dmi'
+	button_icon_state = "mech_zoom_off"
+
+/datum/action/innate/freeform_docker_place/Activate()
+	/*
+	if(QDELETED(target) || !isliving(target))
+		return
+	var/mob/living/C = target
+	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
+	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
+	origin.placeLandingSpot(target)
+	*/
