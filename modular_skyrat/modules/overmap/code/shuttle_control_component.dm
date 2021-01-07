@@ -47,7 +47,7 @@
 /datum/overmap_shuttle_controller/proc/ControllerClick(datum/source, atom/A, params)
 	SIGNAL_HANDLER
 	message_admins("WE CLICKED ON [A]")
-	if(A.z != overmap_obj.current_system.z_level)
+	if(A.z != shuttle.my_overmap_object.current_system.z_level)
 		message_admins("WE CLICKED ON A WRONG Z LEVEL")
 		return
 	shuttle.my_overmap_object.CommandMove(A.x,A.y)
@@ -130,12 +130,11 @@
 	var/list/placement_images = list()
 	var/list/placed_images = list()
 
-/*
 /mob/camera/ai_eye/remote/shuttle_freeform/setLoc(T)
 	..()
-	var/obj/machinery/computer/camera_advanced/shuttle_docker/console = origin
-	console.checkLandingSpot()
-*/
+	var/datum/shuttle_freeform_docker/docker = origin
+	if(docker)
+		docker.checkLandingSpot()
 
 /mob/camera/ai_eye/remote/shuttle_freeform/update_remote_sight(mob/living/user)
 	user.sight = BLIND|SEE_TURFS
@@ -171,6 +170,9 @@
 
 	var/should_supress_view_changes = FALSE
 
+	var/list/placement_images = list()
+	var/list/placed_images = list()
+
 /datum/shuttle_freeform_docker/New(datum/overmap_shuttle_controller/passed_controller, mob/user, z)
 	my_controller = passed_controller
 	z_level = z
@@ -181,11 +183,86 @@
 /datum/shuttle_freeform_docker/proc/CreateEye()
 	eyeobj = new()
 	eyeobj.origin = src
-	eyeobj.setDir(direction)
-	var/turf/myturf = locate(round(world.maxx/2), round(world.maxy/2), z_level)
 	var/obj/docking_port/mobile/my_shuttle = my_controller.shuttle
-	var/w = my_shuttle.width
-	var/h = my_shuttle.height
+	eyeobj.setDir(my_shuttle.dir)
+	var/turf/origin = locate(my_shuttle.x + x_offset, my_shuttle.y + y_offset, my_shuttle.z)
+	for(var/V in my_shuttle.shuttle_areas)
+		var/area/A = V
+		for(var/turf/T in A)
+			if(T.z != origin.z)
+				continue
+			var/image/I = image('icons/effects/alphacolors.dmi', origin, "red")
+			var/x_off = T.x - origin.x
+			var/y_off = T.y - origin.y
+			I.loc = locate(origin.x + x_off, origin.y + y_off, origin.z) //we have to set this after creating the image because it might be null, and images created in nullspace are immutable.
+			I.layer = ABOVE_NORMAL_TURF_LAYER
+			I.plane = 0
+			I.mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+			placement_images[I] = list(x_off, y_off)
+
+/datum/shuttle_freeform_docker/proc/checkLandingSpot()
+	var/turf/eyeturf = get_turf(eyeobj)
+	if(!eyeturf)
+		return SHUTTLE_DOCKER_BLOCKED
+	/*
+	if(!eyeturf.z || SSmapping.level_has_any_trait(eyeturf.z, locked_traits))
+		return SHUTTLE_DOCKER_BLOCKED
+	*/
+
+	. = SHUTTLE_DOCKER_LANDING_CLEAR
+	var/list/bounds = my_controller.shuttle.return_coords(eyeobj.x - x_offset, eyeobj.y - y_offset, eyeobj.dir)
+	var/list/overlappers = SSshuttle.get_dock_overlap(bounds[1], bounds[2], bounds[3], bounds[4], eyeobj.z)
+	var/list/image_cache = placement_images
+	for(var/i in 1 to image_cache.len)
+		var/image/I = image_cache[i]
+		var/list/coords = image_cache[I]
+		var/turf/T = locate(eyeturf.x + coords[1], eyeturf.y + coords[2], eyeturf.z)
+		I.loc = T
+		switch(checkLandingTurf(T, overlappers))
+			if(SHUTTLE_DOCKER_LANDING_CLEAR)
+				I.icon_state = "green"
+			if(SHUTTLE_DOCKER_BLOCKED_BY_HIDDEN_PORT)
+				I.icon_state = "green"
+				if(. == SHUTTLE_DOCKER_LANDING_CLEAR)
+					. = SHUTTLE_DOCKER_BLOCKED_BY_HIDDEN_PORT
+			else
+				I.icon_state = "red"
+				. = SHUTTLE_DOCKER_BLOCKED
+
+/datum/shuttle_freeform_docker/proc/checkLandingTurf(turf/T, list/overlappers)
+	// Too close to the map edge is never allowed
+	if(!T || T.x <= 10 || T.y <= 10 || T.x >= world.maxx - 10 || T.y >= world.maxy - 10)
+		return SHUTTLE_DOCKER_BLOCKED
+	// If it's one of our shuttle areas assume it's ok to be there
+	if(my_controller.shuttle.shuttle_areas[T.loc])
+		return SHUTTLE_DOCKER_LANDING_CLEAR
+	. = SHUTTLE_DOCKER_LANDING_CLEAR
+	// See if the turf is hidden from us
+	var/list/hidden_turf_info
+	if(!see_hidden)
+		hidden_turf_info = SSshuttle.hidden_shuttle_turfs[T]
+		if(hidden_turf_info)
+			. = SHUTTLE_DOCKER_BLOCKED_BY_HIDDEN_PORT
+
+	if(length(whitelist_turfs))
+		var/turf_type = hidden_turf_info ? hidden_turf_info[2] : T.type
+		if(!is_type_in_typecache(turf_type, whitelist_turfs))
+			return SHUTTLE_DOCKER_BLOCKED
+
+	// Checking for overlapping dock boundaries
+	for(var/i in 1 to overlappers.len)
+		var/obj/docking_port/port = overlappers[i]
+		if(port == my_port)
+			continue
+		var/port_hidden = !see_hidden && port.hidden
+		var/list/overlap = overlappers[port]
+		var/list/xs = overlap[1]
+		var/list/ys = overlap[2]
+		if(xs["[T.x]"] && ys["[T.y]"])
+			if(port_hidden)
+				. = SHUTTLE_DOCKER_BLOCKED_BY_HIDDEN_PORT
+			else
+				return SHUTTLE_DOCKER_BLOCKED
 
 /datum/shuttle_freeform_docker/proc/GrantActions()
 	if(off_action)
@@ -224,6 +301,11 @@
 	eyeobj.setLoc(eyeobj.loc)
 	if(should_supress_view_changes)
 		current_user.client.view_size.supress()
+	var/list/to_add = list()
+	to_add += placement_images
+	to_add += placed_images
+	current_user.client.images += to_add
+	//current_user.client.view_size.setTo(view_range)
 
 /datum/shuttle_freeform_docker/proc/remove_eye_control()
 	//REMOVE ACTIONS
@@ -232,6 +314,12 @@
 		if(eyeobj.visible_icon && current_user.client)
 			current_user.client.images -= eyeobj.user_image
 		current_user.client.view_size.unsupress()
+
+	var/list/to_remove = list()
+	to_remove += placement_images
+	to_remove += placed_images
+	current_user.client.images -= to_remove
+	//current_user.client.view_size.resetToDefault()
 
 	eyeobj.eye_user = null
 	current_user.remote_control = null
