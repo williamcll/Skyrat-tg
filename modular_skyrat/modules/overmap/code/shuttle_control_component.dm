@@ -139,7 +139,6 @@
 	visible_icon = FALSE
 	use_static = USE_STATIC_NONE
 	var/list/placement_images = list()
-	var/list/placed_images = list()
 
 /mob/camera/ai_eye/remote/shuttle_freeform/setLoc(T)
 	..()
@@ -165,7 +164,6 @@
 	var/y_offset = 0
 	var/list/whitelist_turfs = list(/turf/open/space, /turf/open/floor/plating, /turf/open/lava)
 	var/see_hidden = FALSE
-	var/designate_time = 0
 	var/turf/designating_target_loc
 	var/jammed = FALSE
 	var/obj/docking_port/stationary/my_port //the custom docking port placed by this console
@@ -182,7 +180,6 @@
 	var/should_supress_view_changes = FALSE
 
 	var/list/placement_images = list()
-	var/list/placed_images = list()
 
 /datum/shuttle_freeform_docker/Destroy()
 	abort_action.target = null
@@ -329,12 +326,10 @@
 	current_user.remote_control = eyeobj
 	current_user.reset_perspective(eyeobj)
 	eyeobj.setLoc(eyeobj.loc)
-	if(should_supress_view_changes && current_user.client)
-		current_user.client.view_size.supress()
-	var/list/to_add = list()
-	to_add += placement_images
-	to_add += placed_images
-	current_user.client.images += to_add
+	if(current_user.client)
+		if(should_supress_view_changes)
+			current_user.client.view_size.supress()
+		current_user.client.images += placement_images
 	//current_user.client.view_size.setTo(view_range)
 
 /datum/shuttle_freeform_docker/proc/remove_eye_control()
@@ -346,10 +341,7 @@
 		current_user.client.view_size.unsupress()
 
 	if(current_user.client)
-		var/list/to_remove = list()
-		to_remove += placement_images
-		to_remove += placed_images
-		current_user.client.images -= to_remove
+		current_user.client.images -= placement_images
 	//current_user.client.view_size.resetToDefault()
 
 	eyeobj.eye_user = null
@@ -418,3 +410,44 @@
 	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
 	origin.placeLandingSpot(target)
 	*/
+	var/datum/shuttle_freeform_docker/docker = target
+	docker.PlaceLandingSpot()
+
+/datum/shuttle_freeform_docker/proc/PlaceLandingSpot()
+
+	var/mob/camera/ai_eye/remote/shuttle_docker/the_eye = eyeobj
+	var/landing_clear = checkLandingSpot()
+
+	if(landing_clear != SHUTTLE_DOCKER_LANDING_CLEAR)
+		switch(landing_clear)
+			if(SHUTTLE_DOCKER_BLOCKED)
+				to_chat(current_user, "<span class='warning'>Invalid transit location.</span>")
+			if(SHUTTLE_DOCKER_BLOCKED_BY_HIDDEN_PORT)
+				to_chat(current_user, "<span class='warning'>Unknown object detected in landing zone. Please designate another location.</span>")
+		return
+
+	///Make one use port that deleted after fly off, to don't lose info that need on to properly fly off.
+	if(my_port?.get_docked())
+		my_port.unregister()
+		my_port.delete_after = TRUE
+		my_port.id = null
+		my_port.name = "Old [my_port.name]"
+		my_port = null
+
+	if(!my_port)
+		my_port = new()
+		my_port.unregister()
+		my_port.name = shuttlePortName
+		my_port.id = shuttlePortId
+		my_port.height = shuttle_port.height
+		my_port.width = shuttle_port.width
+		my_port.dheight = shuttle_port.dheight
+		my_port.dwidth = shuttle_port.dwidth
+		my_port.hidden = shuttle_port.hidden
+		my_port.register(TRUE)
+	my_port.setDir(eyeobj.dir)
+	my_port.forceMove(locate(eyeobj.x - x_offset, eyeobj.y - y_offset, eyeobj.z))
+
+	if(current_user.client)
+		to_chat(current_user, "<span class='notice'>Transit location designated.</span>")
+	return TRUE
