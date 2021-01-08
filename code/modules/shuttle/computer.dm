@@ -39,10 +39,66 @@
 		connect_to_shuttle(SSshuttle.get_containing_shuttle(src))
 
 /obj/machinery/computer/shuttle/ui_interact(mob/user, datum/tgui/ui)
-	ui = SStgui.try_update_ui(user, src, ui)
-	if(!ui)
-		ui = new(user, src, "ShuttleConsole", name)
-		ui.open()
+	if(uses_overmap)
+		var/obj/docking_port/mobile/M = SSshuttle.getShuttle(shuttleId)
+		if(!M)
+			return
+		var/list/dat = list("<center>")
+		var/status_info
+		if(admin_controlled)
+			status_info = "Unauthorized Access"
+		else if(locked)
+			status_info = "Locked"
+		else
+			switch(M.mode)
+				if(SHUTTLE_IGNITING)
+					status_info = "Igniting"
+				if(SHUTTLE_IDLE)
+					status_info = "Idle"
+				if(SHUTTLE_RECHARGING)
+					status_info = "Recharging"
+				else
+					status_info = "In Transit"
+		dat += "STATUS: <b>[status_info]</b>"
+		var/link
+		if(M.mode == SHUTTLE_IDLE)
+			link = "href='?src=[REF(src)];overmap_launch=1'"
+		else
+			link = "class='linkOff'"
+		dat += "<BR><BR><a [link]>Depart to Overmap</a></center>"
+		var/datum/browser/popup = new(user, "shuttle_computer", name, 300, 200)
+		popup.set_content(dat.Join())
+		popup.open()
+	else
+		ui = SStgui.try_update_ui(user, src, ui)
+		if(!ui)
+			ui = new(user, src, "ShuttleConsole", name)
+			ui.open()
+
+/obj/machinery/computer/shuttle/Topic(href, href_list)
+	if(href_list["overmap_launch"])
+		if(!uses_overmap)
+			return
+		if(!launch_check(usr))
+			return
+		var/obj/docking_port/mobile/M = SSshuttle.getShuttle(shuttleId)
+		if(M.launch_status == ENDGAME_LAUNCHED)
+			to_chat(usr, "<span class='warning'>You've already escaped. Never going back to that place again!</span>")
+			return
+		if(no_destination_swap)
+			if(M.mode == SHUTTLE_RECHARGING)
+				to_chat(usr, "<span class='warning'>Shuttle engines are not ready for use.</span>")
+				return
+			if(M.mode != SHUTTLE_IDLE)
+				to_chat(usr, "<span class='warning'>Shuttle already in transit.</span>")
+				return
+		if(uses_overmap)
+			M.destination = "overmap"
+			M.mode = SHUTTLE_IGNITING
+			M.setTimer(5 SECONDS)
+			say("Shuttle departing. Please stand away from the doors.")
+			log_shuttle("[key_name(usr)] has sent shuttle \"[M]\" into the overmap.")
+			return
 
 /obj/machinery/computer/shuttle/ui_data(mob/user)
 	var/list/data = list()
@@ -101,6 +157,8 @@
 
 /obj/machinery/computer/shuttle/ui_act(action, params)
 	. = ..()
+	if(uses_overmap)
+		return
 	if(.)
 		return
 	if(!allowed(usr))
@@ -122,12 +180,7 @@
 				if(M.mode != SHUTTLE_IDLE)
 					to_chat(usr, "<span class='warning'>Shuttle already in transit.</span>")
 					return
-			if(uses_overmap)
-				M.destination = "overmap"
-				M.mode = SHUTTLE_IGNITING
-				M.setTimer(5 SECONDS)
-				return
-			
+
 			var/list/options = params2list(possible_destinations)
 			var/obj/docking_port/stationary/S = SSshuttle.getDock(params["shuttle_id"])
 			if(!(S.port_destinations in options))
@@ -143,7 +196,7 @@
 					to_chat(usr, "<span class='warning'>Invalid shuttle requested.</span>")
 				else
 					to_chat(usr, "<span class='warning'>Unable to comply.</span>")
-			
+
 		if("set_destination")
 			var/target_destination = params["destination"]
 			if(target_destination)

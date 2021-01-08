@@ -42,6 +42,7 @@
 	var/datum/overmap_object/shuttle/my_overmap_object
 	var/datum/overmap_shuttle_controller/shuttle_controller
 	var/possible_destinations
+	var/obj/docking_port/stationary/freeform_port
 
 	///register to SSshuttles
 /obj/docking_port/proc/register()
@@ -553,6 +554,14 @@
 		spawned_shuttle.my_shuttle = src
 		if(shuttle_controller)
 			shuttle_controller.busy = FALSE
+		if(freeform_port)
+			if(freeform_port?.get_docked())
+				freeform_port.delete_after = TRUE
+				freeform_port.id = null
+				freeform_port.name = "Old [my_port.name]"
+				freeform_port = null
+			else
+				QDEL_NULL(freeform_port)
 	else if(!destination)
 		// sent to transit with no destination -> unlimited timer
 		timer = INFINITY
