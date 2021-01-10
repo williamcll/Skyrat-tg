@@ -158,7 +158,17 @@
 	place_action.Remove(current_user)
 
 /datum/shuttle_freeform_docker/proc/RotateAction()
-		
+	direction = turn(direction, -90)
+	eyeobj.setDir(direction)
+	var/list/image_cache = placement_images
+	for(var/i in 1 to image_cache.len)
+		var/image/pic = image_cache[i]
+		var/list/coords = image_cache[pic]
+		var/Tmp = coords[1]
+		coords[1] = coords[2]
+		coords[2] = -Tmp
+		pic.loc = locate(eyeobj.x + coords[1], eyeobj.y + coords[2], eyeobj.z)
+	checkLandingSpot()
 
 /datum/shuttle_freeform_docker/proc/StartCameraView()
 	if(!eyeobj)
@@ -199,7 +209,6 @@
 	eyeobj.eye_user = null
 	current_user.remote_control = null
 	current_user = null
-	//playsound(src, 'sound/machines/terminal_off.ogg', 25, FALSE)
 
 /datum/action/innate/freeform_docker_abort
 	name = "Abort Docking"
@@ -207,14 +216,6 @@
 	button_icon_state = "mech_cycle_equip_off"
 
 /datum/action/innate/freeform_docker_abort/Activate()
-	/*
-	if(QDELETED(target) || !isliving(target))
-		return
-	var/mob/living/C = target
-	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
-	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
-	origin.rotateLandingSpot()
-	*/
 	var/datum/shuttle_freeform_docker/docker = target
 	docker.my_controller.AbortFreeform()
 
@@ -223,15 +224,8 @@
 	icon_icon = 'icons/mob/actions/actions_mecha.dmi'
 	button_icon_state = "mech_cycle_equip_off"
 
-/datum/action/innate/freeform_docker_jump_view/Activate()
-	/*
-	if(QDELETED(target) || !isliving(target))
-		return
-	var/mob/living/C = target
-	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
-	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
-	origin.rotateLandingSpot()
-	*/
+/datum/action/innate/freeform_docker_jump_view/Activate() //TODO
+	return
 
 /datum/action/innate/freeform_docker_rotate
 	name = "Rotate"
@@ -239,14 +233,6 @@
 	button_icon_state = "mech_cycle_equip_off"
 
 /datum/action/innate/freeform_docker_rotate/Activate()
-	/*
-	if(QDELETED(target) || !isliving(target))
-		return
-	var/mob/living/C = target
-	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
-	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
-	origin.rotateLandingSpot()
-	*/
 	var/datum/shuttle_freeform_docker/docker = target
 	docker.RotateAction()
 
@@ -256,14 +242,6 @@
 	button_icon_state = "mech_zoom_off"
 
 /datum/action/innate/freeform_docker_place/Activate()
-	/*
-	if(QDELETED(target) || !isliving(target))
-		return
-	var/mob/living/C = target
-	var/mob/camera/ai_eye/remote/remote_eye = C.remote_control
-	var/obj/machinery/computer/camera_advanced/shuttle_docker/origin = remote_eye.origin
-	origin.placeLandingSpot(target)
-	*/
 	var/datum/shuttle_freeform_docker/docker = target
 	docker.PlaceLandingSpot()
 

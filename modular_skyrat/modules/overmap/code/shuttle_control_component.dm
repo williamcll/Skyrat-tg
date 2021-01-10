@@ -29,6 +29,7 @@
 	RegisterSignal(mob_controller, COMSIG_CLICKON, .proc/ControllerClick)
 	mob_controller.client.perspective = EYE_PERSPECTIVE
 	mob_controller.client.eye = shuttle.my_overmap_object.my_visual
+	mob_controller.remote_control = shuttle.my_overmap_object.my_visual
 	mob_controller.update_parallax_contents()
 	quit_control_button.Grant(mob_controller)
 	try_dock_button.Grant(mob_controller)
@@ -40,10 +41,12 @@
 	UnregisterSignal(mob_controller, COMSIG_CLICKON)
 	mob_controller.client.perspective = MOB_PERSPECTIVE
 	mob_controller.client.eye = mob_controller
-	mob_controller.update_parallax_contents()
 	quit_control_button.Remove(mob_controller)
 	try_dock_button.Remove(mob_controller)
 	stop_shuttle_button.Remove(mob_controller)
+	mob_controller.update_parallax_contents()
+	playsound(mob_controller, 'sound/machines/terminal_off.ogg', 25, FALSE)
+	mob_controller.remote_control = null
 	mob_controller = null
 	if(removing_overmap)
 		QDEL_NULL(shuttle.my_overmap_object)
@@ -57,6 +60,7 @@
 		mob_controller.client.perspective = EYE_PERSPECTIVE
 		mob_controller.client.eye = shuttle.my_overmap_object.my_visual
 		mob_controller.update_parallax_contents()
+		mob_controller.remote_control = shuttle.my_overmap_object.my_visual
 
 /datum/overmap_shuttle_controller/proc/ControllerClick(datum/source, atom/A, params)
 	SIGNAL_HANDLER
