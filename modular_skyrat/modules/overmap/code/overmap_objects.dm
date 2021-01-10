@@ -1,5 +1,5 @@
 /obj/effect/abstract/overmap
-	glide_size = 100
+	glide_size = 3
 	var/datum/overmap_object/my_overmap_object
 
 /obj/effect/abstract/overmap/relaymove(mob/living/user, direction)
@@ -120,8 +120,10 @@
 		else
 			y--
 	*/
+	/*
 	my_visual.pixel_x = partial_x
 	my_visual.pixel_y = partial_y
+	*/
 	var/matrix/M = new
 	M.Turn(angle)
 	my_visual.transform = M
