@@ -43,6 +43,7 @@
 	var/datum/overmap_shuttle_controller/shuttle_controller
 	var/possible_destinations
 	var/obj/docking_port/stationary/freeform_port
+	var/obj/machinery/shuttle_module_compartment/compartment
 
 	///register to SSshuttles
 /obj/docking_port/proc/register()

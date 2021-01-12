@@ -3710,6 +3710,7 @@
 #include "modular_skyrat\modules\overmap\code\overmap_subsystem.dm"
 #include "modular_skyrat\modules\overmap\code\shuttle_control_component.dm"
 #include "modular_skyrat\modules\overmap\code\shuttle_module_compartment.dm"
+#include "modular_skyrat\modules\overmap\code\shuttle_modules.dm"
 #include "modular_skyrat\modules\panicbunker\code\panicbunker.dm"
 #include "modular_skyrat\modules\pixel_shift\code\pixel_shift.dm"
 #include "modular_skyrat\modules\posi_alert\code\game\machinery\posialert.dm"
