@@ -38,6 +38,11 @@
 
 	var/list/related_levels = list()
 
+	var/interact_flags = NONE
+	var/property_flags = NONE
+
+	var/datum/overmap_lock/main_lock
+
 /datum/overmap_object/proc/relaymove(mob/living/user, direction)
 	return
 
@@ -63,6 +68,17 @@
 
 	var/partial_x = 0
 	var/partial_y = 0
+
+	interact_flags = OMI_LOCKABLE
+
+/datum/overmap_object/shuttle/proc/SetLockTo(target)
+	if(main_lock)
+		qdel(main_lock)
+	main_lock = new(src, target)
+
+/datum/overmap_object/shuttle/proc/AbortLock()
+	if(main_lock)
+		qdel(main_lock)
 
 /datum/overmap_object/shuttle/relaymove(mob/living/user, direction)
 	return
@@ -163,12 +179,16 @@
 	visual_y_offset = -16
 	visual_x_offset = -16
 
+	interact_flags = OMI_LOCKABLE
+
 /datum/overmap_object/lavaland
 	name = "Lavaland planet"
 	icon = 'modular_skyrat/modules/overmap/icons/64x64.dmi'
 	icon_state = "lavaland"
 	visual_y_offset = -16
 	visual_x_offset = -16
+
+	interact_flags = OMI_LOCKABLE
 
 /datum/overmap_object/New(datum/overmap_sun_system/passed_system, x_coord, y_coord)
 	x = x_coord

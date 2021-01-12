@@ -68,7 +68,14 @@
 	if(A.z != shuttle.my_overmap_object.current_system.z_level)
 		message_admins("WE CLICKED ON A WRONG Z LEVEL")
 		return
-	shuttle.my_overmap_object.CommandMove(A.x,A.y)
+	//shuttle.my_overmap_object.CommandMove(A.x,A.y)
+	if(istype(A,/obj/effect/abstract/overmap))
+		var/obj/effect/abstract/overmap/vis_obj = A
+		var/datum/overmap_object/OM = vis_obj.my_overmap_object
+		if(OM == shuttle.my_overmap_object)
+			shuttle.my_overmap_object.AbortLock()
+		else if (OM.interact_flags & OMI_LOCKABLE)
+			shuttle.my_overmap_object.SetLockTo(OM)
 	return COMSIG_CANCEL_CLICKON
 
 /datum/action/innate/try_dock
