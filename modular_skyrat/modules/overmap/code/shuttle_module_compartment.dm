@@ -22,6 +22,14 @@
 
 /obj/machinery/shuttle_module_compartment/proc/TryLinkToShuttle()
 	my_shuttle = SSshuttle.get_containing_shuttle(src)
+	if(my_shuttle)
+		my_shuttle.compartment = src
+
+/obj/machinery/shuttle_module_compartment/Destroy()
+	if(my_shuttle)
+		my_shuttle.compartment = null
+		my_shuttle = null
+	return ..()
 
 /obj/item/circuitboard/machine/shuttle_module_compartment
 	name = "Shuttle Module Compartment (Machine Board)"
