@@ -5,6 +5,7 @@
 	use_power = IDLE_POWER_USE
 	circuit = /obj/item/circuitboard/machine/shuttle_module_compartment
 	var/obj/docking_port/mobile/my_shuttle
+	var/list/installed_modules = list()
 
 /obj/machinery/shuttle_module_compartment/Initialize()
 	. = ..()
@@ -15,6 +16,8 @@
 	if(!my_shuttle)
 		TryLinkToShuttle()
 	var/list/dat = list()
+	for(var/m in installed_modules)
+		message_admins("[m]")
 
 	var/datum/browser/popup = new(user, "shuttle_module_compartment", name, 900, 600)
 	popup.set_content(dat.Join())

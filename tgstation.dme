@@ -3707,6 +3707,7 @@
 #include "modular_skyrat\modules\overmap\code\overmap_helpers.dm"
 #include "modular_skyrat\modules\overmap\code\overmap_lock.dm"
 #include "modular_skyrat\modules\overmap\code\overmap_objects.dm"
+#include "modular_skyrat\modules\overmap\code\overmap_shuttle.dm"
 #include "modular_skyrat\modules\overmap\code\overmap_subsystem.dm"
 #include "modular_skyrat\modules\overmap\code\shuttle_control_component.dm"
 #include "modular_skyrat\modules\overmap\code\shuttle_module_compartment.dm"

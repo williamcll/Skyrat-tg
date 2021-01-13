@@ -29,11 +29,13 @@
 	RegisterSignal(mob_controller, COMSIG_CLICKON, .proc/ControllerClick)
 	mob_controller.client.perspective = EYE_PERSPECTIVE
 	mob_controller.client.eye = shuttle.my_overmap_object.my_visual
+	mob_controller.client.show_popup_menus = FALSE
 	mob_controller.remote_control = shuttle.my_overmap_object.my_visual
 	mob_controller.update_parallax_contents()
 	quit_control_button.Grant(mob_controller)
 	try_dock_button.Grant(mob_controller)
 	stop_shuttle_button.Grant(mob_controller)
+
 
 /datum/overmap_shuttle_controller/proc/RemoveCurrentControl(removing_overmap = FALSE)
 	if(freeform_docker)
@@ -41,6 +43,7 @@
 	UnregisterSignal(mob_controller, COMSIG_CLICKON)
 	mob_controller.client.perspective = MOB_PERSPECTIVE
 	mob_controller.client.eye = mob_controller
+	mob_controller.client.show_popup_menus = TRUE
 	quit_control_button.Remove(mob_controller)
 	try_dock_button.Remove(mob_controller)
 	stop_shuttle_button.Remove(mob_controller)
@@ -68,6 +71,13 @@
 	if(A.z != shuttle.my_overmap_object.current_system.z_level)
 		message_admins("WE CLICKED ON A WRONG Z LEVEL")
 		return
+	var/list/modifiers = params2list(params)
+	if(modifiers["shift"])
+		A.examine(source)
+		return COMSIG_CANCEL_CLICKON
+	if(modifiers["right"])
+		shuttle.my_overmap_object.CommandMove(A.x,A.y)
+		return COMSIG_CANCEL_CLICKON
 	//shuttle.my_overmap_object.CommandMove(A.x,A.y)
 	if(istype(A,/obj/effect/abstract/overmap))
 		var/obj/effect/abstract/overmap/vis_obj = A
@@ -76,6 +86,7 @@
 			shuttle.my_overmap_object.AbortLock()
 		else if (OM.interact_flags & OMI_LOCKABLE)
 			shuttle.my_overmap_object.SetLockTo(OM)
+		return COMSIG_CANCEL_CLICKON
 	return COMSIG_CANCEL_CLICKON
 
 /datum/action/innate/try_dock

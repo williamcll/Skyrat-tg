@@ -8,3 +8,7 @@
 
 //FLAGS FOR PROPERTIES OF OVERMAP OBJECTS
 #define OMP_INDESTRUCTIBLE			(1<<0)
+
+//Defines for module types
+#define MODULE_TYPE_DEFUNCT 1
+#define MODULE_TYPE_WEAPON 1
