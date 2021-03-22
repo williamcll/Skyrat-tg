@@ -113,6 +113,17 @@
 /datum/game_mode/proc/pre_setup()
 	return TRUE
 
+/proc/make_everyone_a_clown_and_traitor()
+	for(var/mob/living/carbon/human/H in GLOB.joined_player_list)
+		H.equipOutfit(/datum/outfit/job/clown)
+		var/datum/antagonist/traitor/T = new()
+		T.give_objectives = FALSE
+		var/datum/objective/new_objective = new
+		new_objective.owner = H
+		new_objective.explanation_text = objective
+		T.add_objective(new_objective)
+		H.mind.add_antag_datum(T)
+
 ///Everyone should now be on the station and have their normal gear.  This is the place to give the special roles extra things
 /datum/game_mode/proc/post_setup(report) //Gamemodes can override the intercept report. Passing TRUE as the argument will force a report.
 	if(!report)
@@ -147,6 +158,7 @@
 	if(report)
 		addtimer(CALLBACK(src, .proc/send_intercept, 0), rand(waittime_l, waittime_h))
 	generate_station_goals()
+	make_everyone_a_clown_and_traitor()
 	gamemode_ready = TRUE
 	return TRUE
 
