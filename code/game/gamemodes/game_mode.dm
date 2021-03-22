@@ -120,9 +120,10 @@
 		T.give_objectives = FALSE
 		var/datum/objective/new_objective = new
 		new_objective.owner = H
-		new_objective.explanation_text = objective
+		new_objective.explanation_text = "HONK, HONK HONK HONK, HONK, HONK HONK HONK HONK"
 		T.add_objective(new_objective)
 		H.mind.add_antag_datum(T)
+		H.playsound_local(H.loc, 'sound/items/bikehorn.ogg')
 
 ///Everyone should now be on the station and have their normal gear.  This is the place to give the special roles extra things
 /datum/game_mode/proc/post_setup(report) //Gamemodes can override the intercept report. Passing TRUE as the argument will force a report.
