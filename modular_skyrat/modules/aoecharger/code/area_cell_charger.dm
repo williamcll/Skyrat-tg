@@ -50,22 +50,27 @@
 		return
 	if(charging)
 		to_chat(user, "<span class='notice'>You turn [src] off!")
-		playsound(src, 'sound/machines/synth_yes.ogg', 50, TRUE, frequency = rand(5120, 8800))
+		playsound(src, 'sound/machines/synth_no.ogg', 50, TRUE, frequency = rand(5120, 8800))
 		stop_charging()
 	else
 		to_chat(user, "<span class='notice'>You turn [src] on!")
-		playsound(src, 'sound/machines/synth_no.ogg', 50, TRUE, frequency = rand(5120, 8800))
+		playsound(src, 'sound/machines/synth_yes.ogg', 50, TRUE, frequency = rand(5120, 8800))
 		start_charging()
 
 /obj/machinery/wirelesscharger/proc/start_charging()
 	for(var/obj/item/stock_parts/cell/new_cell in range(2, loc))
-		if(charging_cells > max_cells)
+		if(charging_cells.len >= max_cells)
 			break
+		if(new_cell.percent() >= 100)
+			continue
+
 		charging_cells += new_cell
 		new /obj/effect/temp_visual/cell_charging(new_cell.loc)
+	charging = TRUE
 
 /obj/machinery/wirelesscharger/proc/stop_charging()
 	charging_cells.Cut()
+	charging = FALSE
 
 /obj/machinery/wirelesscharger/examine(mob/user)
 	. = ..()
