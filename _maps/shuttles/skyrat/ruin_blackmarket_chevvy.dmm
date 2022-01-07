@@ -3,6 +3,10 @@
 /obj/effect/spawner/random/trash/mess,
 /turf/open/floor/mineral/titanium,
 /area/shuttle/blackmarket_chevvy)
+"dM" = (
+/obj/structure/shuttle/engine/propulsion/burst,
+/turf/open/floor/plating,
+/area/shuttle/blackmarket_chevvy)
 "eu" = (
 /obj/structure/table,
 /turf/open/floor/iron,
@@ -13,18 +17,20 @@
 "fp" = (
 /turf/closed/wall/mineral/titanium,
 /area/shuttle/blackmarket_chevvy)
-"iG" = (
-/obj/structure/chair/comfy/shuttle{
-	dir = 4
-	},
-/turf/open/floor/plating,
-/area/shuttle/blackmarket_chevvy)
 "kT" = (
 /obj/effect/turf_decal/siding/brown{
 	dir = 1
 	},
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/mineral/titanium,
+/area/shuttle/blackmarket_chevvy)
+"lB" = (
+/obj/structure/chair/comfy/shuttle{
+	dir = 4
+	},
+/obj/structure/window/reinforced/spawner,
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/iron,
 /area/shuttle/blackmarket_chevvy)
 "qx" = (
 /obj/effect/decal/cleanable/dirt/dust,
@@ -37,36 +43,64 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/plating,
 /area/shuttle/blackmarket_chevvy)
-"sU" = (
-/obj/structure/chair/comfy/shuttle{
-	dir = 4
-	},
-/obj/effect/decal/cleanable/dirt/dust,
-/turf/open/floor/mineral/titanium,
-/area/shuttle/blackmarket_chevvy)
-"ts" = (
-/obj/effect/decal/cleanable/dirt/dust,
-/turf/open/floor/mineral/titanium,
-/area/shuttle/blackmarket_chevvy)
 "uW" = (
 /obj/effect/turf_decal/siding/brown{
 	dir = 1
 	},
 /turf/open/floor/mineral/titanium,
 /area/shuttle/blackmarket_chevvy)
-"vD" = (
-/obj/structure/shuttle/engine/propulsion/burst{
-	dir = 4
-	},
-/turf/closed/wall/mineral/titanium,
+"zl" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/structure/shuttle/engine/heater,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/orange/visible,
+/turf/open/floor/plating,
 /area/shuttle/blackmarket_chevvy)
-"vK" = (
+"Dx" = (
+/turf/open/floor/plating,
+/area/shuttle/blackmarket_chevvy)
+"Dy" = (
+/obj/structure/window/reinforced/spawner,
+/obj/machinery/computer/shuttle/caravan/blackmarket_chevvy{
+	dir = 8
+	},
+/turf/open/floor/plating,
+/area/shuttle/blackmarket_chevvy)
+"Hj" = (
 /obj/structure/chair/comfy/shuttle{
 	dir = 4
 	},
 /turf/open/floor/mineral/titanium,
 /area/shuttle/blackmarket_chevvy)
-"wV" = (
+"Pb" = (
+/obj/effect/spawner/structure/window/reinforced/shuttle,
+/turf/open/floor/plating,
+/area/shuttle/blackmarket_chevvy)
+"RU" = (
+/obj/machinery/computer/camera_advanced/shuttle_docker/blackmarket_chevvy{
+	dir = 8
+	},
+/turf/open/floor/iron,
+/area/shuttle/blackmarket_chevvy)
+"SN" = (
+/obj/effect/decal/cleanable/dirt/dust,
+/obj/machinery/atmospherics/components/unary/portables_connector/visible,
+/obj/machinery/portable_atmospherics/canister/carbon_dioxide,
+/turf/open/floor/mineral/titanium,
+/area/shuttle/blackmarket_chevvy)
+"Ut" = (
+/obj/structure/chair/comfy/shuttle{
+	dir = 4
+	},
+/turf/open/floor/plating,
+/area/shuttle/blackmarket_chevvy)
+"Vy" = (
+/obj/machinery/light{
+	dir = 4
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/titanium,
+/area/shuttle/blackmarket_chevvy)
+"XU" = (
 /obj/docking_port/mobile{
 	callTime = 50;
 	dir = 4;
@@ -82,48 +116,9 @@
 /obj/machinery/door/airlock/external,
 /turf/open/floor/plating,
 /area/shuttle/blackmarket_chevvy)
-"Dx" = (
-/turf/open/floor/plating,
-/area/shuttle/blackmarket_chevvy)
-"GO" = (
-/obj/structure/window/reinforced/spawner,
-/obj/machinery/computer/shuttle/caravan/blackmarket_chevvy{
-	dir = 8
-	},
-/turf/open/floor/plating,
-/area/shuttle/blackmarket_chevvy)
-"Jv" = (
-/obj/structure/shuttle/engine/propulsion/burst{
-	dir = 8
-	},
-/turf/closed/wall/mineral/titanium,
-/area/shuttle/blackmarket_chevvy)
-"Ov" = (
-/obj/structure/chair/comfy/shuttle{
-	dir = 4
-	},
-/obj/structure/window/reinforced/spawner,
+"Yw" = (
 /obj/effect/decal/cleanable/dirt/dust,
-/turf/open/floor/iron,
-/area/shuttle/blackmarket_chevvy)
-"OR" = (
-/obj/structure/chair/comfy/shuttle{
-	dir = 8
-	},
-/obj/effect/decal/cleanable/dirt/dust,
-/turf/open/floor/mineral/titanium,
-/area/shuttle/blackmarket_chevvy)
-"Tk" = (
-/obj/machinery/computer/camera_advanced/shuttle_docker/blackmarket_chevvy{
-	dir = 8
-	},
-/turf/open/floor/iron,
-/area/shuttle/blackmarket_chevvy)
-"Vy" = (
-/obj/machinery/light{
-	dir = 4
-	},
-/obj/effect/decal/cleanable/dirt/dust,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/orange/visible,
 /turf/open/floor/mineral/titanium,
 /area/shuttle/blackmarket_chevvy)
 "YP" = (
@@ -131,21 +126,24 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /turf/open/floor/iron,
 /area/shuttle/blackmarket_chevvy)
-"YX" = (
-/obj/effect/spawner/structure/window/reinforced/shuttle,
-/turf/open/floor/plating,
+"ZI" = (
+/obj/structure/chair/comfy/shuttle{
+	dir = 8
+	},
+/obj/effect/decal/cleanable/dirt/dust,
+/turf/open/floor/mineral/titanium,
 /area/shuttle/blackmarket_chevvy)
 
 (1,1,1) = {"
-Jv
 fp
 fp
-YX
-wV
-YX
+fp
+Pb
+XU
+Pb
 fp
 fp
-Jv
+fp
 "}
 (2,1,1) = {"
 fp
@@ -153,41 +151,41 @@ YP
 rw
 uW
 fh
-iG
-vK
-sU
-fp
+Ut
+Hj
+zl
+dM
 "}
 (3,1,1) = {"
-YX
+Pb
 eu
-Ov
+lB
 kT
 qx
 bY
 Dx
-ts
-YX
+Yw
+Pb
 "}
 (4,1,1) = {"
 fp
-Tk
-GO
+RU
+Dy
 uW
 Vy
-OR
-OR
-OR
-fp
+ZI
+SN
+zl
+dM
 "}
 (5,1,1) = {"
-vD
-YX
-YX
-YX
 fp
-YX
-YX
-YX
-vD
+Pb
+Pb
+Pb
+fp
+Pb
+Pb
+Pb
+fp
 "}
