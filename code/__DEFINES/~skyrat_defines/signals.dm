@@ -59,6 +59,23 @@
 ///from base of /obj/effect/abstract/liquid_turf/Initialize() (/obj/effect/abstract/liquid_turf/liquids)
 #define COMSIG_TURF_LIQUIDS_CREATION "turf_liquids_creation"
 
+// Firealarm signals
+/// /obj/machinery/firealarm/proc/trigger_effects(manual = FALSE)
+#define COMSIG_FIREALARM_TRIGGERED_ON "firealarm_triggered_on"
+#define COMSIG_FIREALARM_TRIGGER_DOORS "firealarm_trigger_doors"
+/// /obj/machinery/firealarm/proc/untrigger_effects()
+#define COMSIG_FIREALARM_TRIGGERED_OFF "firealarm_triggered_off"
+/// /obj/machinery/door/firedoor/proc/trigger_hot()
+#define COMSIG_FIREDOOR_CLOSED_FIRE "firedoor_closed_fire"
+
+
+///from base of mob/clickon(): (atom/A, params)
+#define COMSIG_CLICKON "any_clickon"
+	#define COMSIG_CANCEL_CLICKON 1
+
+/// Called in /obj/machinery/atmospherics/components/unary/engine/DrawThrust(), and in /obj/structure/shuttle/engine/proc/DrawThrust()
+#define COMSIG_ENGINE_DRAWN_POWER "engine_drawn_power"
+
 //when someone casts their fishing rod
 #define COMSIG_START_FISHING "start_fishing"
 //when someone pulls back their fishing rod

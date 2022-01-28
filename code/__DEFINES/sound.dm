@@ -144,6 +144,8 @@
 #define ANNOUNCER_ERTYES "announcer_ertyes"
 #define ANNOUNCER_MUTANTS "announcer_mutants"
 #define ANNOUNCER_KLAXON "announcer_klaxon"
+#define ANNOUNCER_BLUESPACEARTY_2 "announcer_bluespacearty_2"
+#define ANNOUNCER_CME "announcer_cme"
 //SKYRAT EDIT END
 
 
@@ -185,6 +187,8 @@ GLOBAL_LIST_INIT(announcer_keys, list(
 	ANNOUNCER_SPOOKY,
 	ANNOUNCER_ERTYES,
 	ANNOUNCER_MUTANTS,
-	ANNOUNCER_KLAXON
+	ANNOUNCER_KLAXON,
+	ANNOUNCER_BLUESPACEARTY_2,
+	ANNOUNCER_CME,
 	//SKYRAT EDIT END
 ))
