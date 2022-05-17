@@ -392,7 +392,7 @@
 
 // Donation reward for TheOOZ
 /obj/item/clothing/mask/kindle
-	name = "mask of Kindle"
+	name = "\proper The mask of Kindle"
 	desc = "The mask which belongs to Nanotrasen's Outpost Captain Kindle, it is the symbol of her 'Kindled' cult. The material feels like it's made entirely out of inexpensive plastic."
 	icon = 'modular_skyrat/master_files/icons/donator/obj/clothing/masks.dmi'
 	icon_state = "kindle"
@@ -426,14 +426,14 @@
 
 /obj/item/clothing/mask/kindle/atom_destruction(damage_flag)
 	. = ..()
-	name = "broken mask of Kindle"
+	name = "\proper The broken mask of Kindle"
 	desc = "The mask which belongs to Nanotrasen's Outpost Captain Kindle, it is the symbol of her 'Kindled' cult. The material is completely shattered in half."
 	icon_state = "kindle_broken"
 	inhand_icon_state = "kindle_broken"
 
 /obj/item/clothing/mask/kindle/repair()
 	. = ..()
-	name = "mended mask of Kindle"
+	name = "\proper The mended mask of Kindle"
 	desc = "The mask which belongs to Nanotrasen's Outpost Captain Kindle, it is the symbol of her 'Kindled' cult. The material seems extra flimsy, like it has recently been repaired in a hurry."
 	icon_state = "kindle"
 	inhand_icon_state = "kindle"
@@ -1376,3 +1376,12 @@
 	icon = 'modular_skyrat/master_files/icons/donator/obj/clothing/glasses.dmi'
 	icon_state = "supergarsred"
 	worn_icon = 'modular_skyrat/master_files/icons/donator/mob/clothing/eyes.dmi'
+
+//Donation reward for Konstyantyn
+/obj/item/clothing/accessory/badge/holo/jade
+    name = "jade holobadge"
+    desc = "A strangely green holobadge. 'Lieutenant Uriah' is stamped onto it, above the letters JS."
+    icon = 'modular_skyrat/master_files/icons/donator/obj/custom.dmi'
+    worn_icon = 'modular_skyrat/master_files/icons/donator/mob/clothing/custom_w.dmi'
+    icon_state = "greenbadge"
+
