@@ -1,12 +1,7 @@
 /*
-
-//////////////////////////
-///CODE FOR LEWD QUIRKS///
-//////////////////////////
-
-/////////////////
-///BIMBO TRAIT///
-/////////////////
+/*
+*	BIMBO
+*/
 
 /datum/brain_trauma
 	///Whether the trauma will be displayed on a scanner or kiosk
@@ -167,7 +162,7 @@
 /datum/brain_trauma/special/bimbo/on_lose()
 	SEND_SIGNAL(owner, COMSIG_CLEAR_MOOD_EVENT, "bimbo", /datum/mood_event/bimbo)
 	if(HAS_TRAIT_FROM(owner, TRAIT_BIMBO, LEWDCHEM_TRAIT))
-		REMOVE_TRAIT(owner,TRAIT_BIMBO, LEWDCHEM_TRAIT)
+		REMOVE_TRAIT(owner, TRAIT_BIMBO, LEWDCHEM_TRAIT)
 	UnregisterSignal(owner, COMSIG_MOB_SAY)
 	if(HAS_TRAIT_FROM(owner, TRAIT_MASOCHISM, APHRO_TRAIT))
 		REMOVE_TRAIT(owner, TRAIT_MASOCHISM, APHRO_TRAIT)
@@ -176,9 +171,9 @@
 /datum/mood_event/bimbo
 	description = span_purple("So-o... Help..less... Lo-ve it!\n")
 
-///////////////
-///MASOCHISM///
-///////////////
+/*
+*	MASOCHISM
+*/
 
 /datum/quirk/masochism
 	name = "Masochism"
@@ -202,9 +197,9 @@
 	REMOVE_TRAIT(affected_human, TRAIT_MASOCHISM, LEWDQUIRK_TRAIT)
 	affected_human.pain_limit = 0
 
-////////////////
-///NEVERBONER///
-////////////////
+/*
+*	NEVERBONER
+*/
 
 /datum/brain_trauma/special/neverboner
 	name = "Loss of libido"
@@ -223,9 +218,9 @@
 	var/mob/living/carbon/human/affected_human = owner
 	REMOVE_TRAIT(affected_human, TRAIT_NEVERBONER, APHRO_TRAIT)
 
-////////////
-///SADISM///
-////////////
+/*
+*	SADISM
+*/
 
 /datum/quirk/sadism
 	name = "Sadism"
@@ -258,9 +253,9 @@
 	resilience = TRAUMA_RESILIENCE_ABSOLUTE
 
 /datum/brain_trauma/special/sadism/on_life(delta_time, times_fired)
-	var/mob/living/carbon/human/H = owner
-	if(someone_suffering() && H.client?.prefs?.read_preference(/datum/preference/toggle/erp))
-		H.adjustArousal(2)
+	var/mob/living/carbon/human/affected_mob = owner
+	if(someone_suffering() && affected_mob.client?.prefs?.read_preference(/datum/preference/toggle/erp))
+		affected_mob.adjustArousal(2)
 		SEND_SIGNAL(owner, COMSIG_ADD_MOOD_EVENT, "sadistic", /datum/mood_event/sadistic)
 	else
 		SEND_SIGNAL(owner, COMSIG_CLEAR_MOOD_EVENT, "sadistic", /datum/mood_event/sadistic)
@@ -268,10 +263,10 @@
 /datum/brain_trauma/special/sadism/proc/someone_suffering()
 	if(HAS_TRAIT(owner, TRAIT_BLIND))
 		return FALSE
-	for(var/mob/living/carbon/human/M in oview(owner, 4))
-		if(!isliving(M)) //ghosts ain't people
+	for(var/mob/living/carbon/human/iterated_mob in oview(owner, 4))
+		if(!isliving(iterated_mob)) //ghosts ain't people
 			continue
-		if(istype(M) && M.pain >= 10)
+		if(istype(iterated_mob) && iterated_mob.pain >= 10)
 			return TRUE
 	return FALSE
 
@@ -288,13 +283,13 @@
 
 /datum/quirk/ropebunny/post_add()
 	. = ..()
-	var/mob/living/carbon/human/H = quirk_holder
-	ADD_TRAIT(H,TRAIT_ROPEBUNNY, LEWDQUIRK_TRAIT)
+	var/mob/living/carbon/human/affected_mob = quirk_holder
+	ADD_TRAIT(affected_mob, TRAIT_ROPEBUNNY, LEWDQUIRK_TRAIT)
 
 /datum/quirk/ropebunny/remove()
 	. = ..()
-	var/mob/living/carbon/human/H = quirk_holder
-	REMOVE_TRAIT(H,TRAIT_ROPEBUNNY, LEWDQUIRK_TRAIT)
+	var/mob/living/carbon/human/affected_mob = quirk_holder
+	REMOVE_TRAIT(affected_mob, TRAIT_ROPEBUNNY, LEWDQUIRK_TRAIT)
 
 //Rigger code
 /datum/quirk/rigger
@@ -308,26 +303,26 @@
 
 /datum/quirk/rigger/post_add()
 	. = ..()
-	var/mob/living/carbon/human/H = quirk_holder
-	ADD_TRAIT(H,TRAIT_RIGGER, LEWDQUIRK_TRAIT)
+	var/mob/living/carbon/human/affected_mob = quirk_holder
+	ADD_TRAIT(affected_mob, TRAIT_RIGGER, LEWDQUIRK_TRAIT)
 
 /datum/quirk/rigger/remove()
 	. = ..()
-	var/mob/living/carbon/human/H = quirk_holder
-	REMOVE_TRAIT(H,TRAIT_RIGGER, LEWDQUIRK_TRAIT)
+	var/mob/living/carbon/human/affected_mob = quirk_holder
+	REMOVE_TRAIT(affected_mob, TRAIT_RIGGER, LEWDQUIRK_TRAIT)
 /datum/mood_event/sadistic
 	description = span_purple("Others' suffering makes me happier\n")
 
-//////////////////
-///EMPATH BOUNS///
-//////////////////
-/mob/living/carbon/human/examine(mob/user)
-	.=..()
-	var/mob/living/U = user
+/*
+*	EMPATH BONUS
+*/
 
-	if(stat != DEAD && !HAS_TRAIT(src, TRAIT_FAKEDEATH) && src != U)
+/mob/living/carbon/human/examine(mob/user)
+	. = ..()
+	var/mob/living/examiner = user
+	if(stat != DEAD && !HAS_TRAIT(src, TRAIT_FAKEDEATH) && src != examiner)
 		if(src != user)
-			if(HAS_TRAIT(U, TRAIT_EMPATH))
+			if(HAS_TRAIT(examiner, TRAIT_EMPATH))
 				switch(arousal)
 					if(11 to 21)
 						. += span_purple("[p_they()] [p_are()] excited.") + "\n"
@@ -341,6 +336,4 @@
 						. += span_purple("[p_they()] [p_are()] aroused as hell.") + "\n"
 					if(91.01 to INFINITY)
 						. += span_purple("[p_they()] [p_are()] extremely excited, exhausting from entolerable desire.") + "\n"
-
-
 */
